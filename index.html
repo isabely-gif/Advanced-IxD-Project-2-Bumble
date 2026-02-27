@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=375, initial-scale=1.0" />
+  <title>Bumble – Lifestyle Compatibility</title>
+  <style>
+    /* ─── Reset ────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    /* ─── Phone shell ───────────────────────────── */
+    .phone {
+      width: 375px;
+      min-height: 100vh;
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── Screens ───────────────────────────────── */
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s;
+    }
+    .screen.hidden  { transform: translateX(100%); opacity: 0; pointer-events: none; }
+    .screen.exit    { transform: translateX(-60%); opacity: 0; pointer-events: none; }
+
+    /* ─── Bumble nav bar ────────────────────────── */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px 10px;
+      background: #fff;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .top-bar .logo {
+      font-size: 22px;
+      font-weight: 800;
+      color: #FCC423;
+      letter-spacing: -0.5px;
+    }
+    .top-bar .icon-btn {
+      width: 36px; height: 36px;
+      border: none; background: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      color: #333;
+    }
+    .top-bar .icon-btn:hover { background: #f5f5f5; }
+
+    /* ─── SCREEN 1 – Card stack ─────────────────── */
+    #screen-swipe .card-area {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-card {
+      position: absolute;
+      inset: 12px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      cursor: grab;
+      user-select: none;
+      background: #111;
+    }
+    .profile-card .photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* placeholder photo via gradient */
+    .profile-card .photo-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .profile-card .card-gradient {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 55%;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+    }
+    .profile-card .card-info {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 16px 18px 18px;
+      color: #fff;
+    }
+    .card-info .name-age {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .card-info .subtitle {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-bottom: 10px;
+    }
+
+    /* ─── Lifestyle badge on card ───────────────── */
+    .lifestyle-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(252, 196, 35, 0.92);
+      border-radius: 20px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .lifestyle-badge:hover { transform: scale(1.03); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .lifestyle-badge:active { transform: scale(0.97); }
+    .lifestyle-badge .pct {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1a1a1a;
+    }
+    .lifestyle-badge .label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .lifestyle-badge .chevron {
+      font-size: 10px;
+      color: #1a1a1a;
+      opacity: 0.7;
+    }
+
+    /* ─── Action buttons ────────────────────────── */
+    .action-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 20px 20px;
+      background: #fff;
+    }
+    .action-btn {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    }
+    .action-btn:hover  { transform: scale(1.08); box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+    .action-btn:active { transform: scale(0.93); }
+    .btn-dislike { background: #fff; color: #ff5a5f; font-size: 26px; }
+    .btn-like    { background: #FCC423; color: #fff; width: 66px; height: 66px; font-size: 28px; }
+    .btn-superlike { background: #fff; color: #1dc8ff; }
+    .btn-boost   { background: #fff; color: #b45bff; }
+
+    /* ─── Bottom nav ────────────────────────────── */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0 18px;
+      border-top: 1px solid #f0f0f0;
+      background: #fff;
+    }
+    .nav-item {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 3px;
+      font-size: 9px; color: #aaa;
+      cursor: pointer;
+    }
+    .nav-item.active { color: #FCC423; }
+    .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
+
+    /* ─── SCREEN 2 – Compatibility detail ──────── */
+    #screen-compat {
+      background: #fff;
+      overflow-y: auto;
+    }
+    .compat-hero {
+      background: linear-gradient(135deg, #FCC423 0%, #f5a623 100%);
+      padding: 28px 24px 32px;
+      position: relative;
+    }
+    .back-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 22px; color: #fff; padding: 0;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 6px;
+      font-weight: 600; font-size: 15px;
+    }
+    .compat-hero .hero-names {
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(0,0,0,0.65);
+      margin-bottom: 6px;
+    }
+    .compat-hero .big-pct {
+      font-size: 72px;
+      font-weight: 900;
+      color: #1a1a1a;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .compat-hero .big-pct span { font-size: 36px; }
+    .compat-hero .hero-sub {
+      font-size: 14px;
+      color: rgba(0,0,0,0.6);
+      font-weight: 500;
+    }
+
+    /* ─── Ring chart ─────────────────────────────── */
+    .ring-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: -40px;
+      margin-bottom: 24px;
+    }
+    .ring-wrap svg { filter: drop-shadow(0 4px 16px rgba(0,0,0,0.15)); }
+
+    /* ─── Category cards ────────────────────────── */
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 0 20px 10px;
+    }
+    .category-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
+    .cat-card {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .cat-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .cat-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .cat-body { flex: 1; min-width: 0; }
+    .cat-name { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 3px; }
+    .cat-desc { font-size: 12px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cat-pct-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+    .cat-pct { font-size: 17px; font-weight: 800; }
+    .bar-track {
+      width: 60px; height: 5px;
+      background: #eee;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .bar-fill { height: 100%; border-radius: 99px; transition: width 0.6s 0.2s; }
+
+    /* ─── SCREEN 3 – Category drill-down ───────── */
+    #screen-category {
+      background: #fff;
+      overflow-y: auto;
+    }
+    .cat-hero {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .cat-hero .cat-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+    }
+    .cat-hero-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+    }
+    .cat-hero-name { font-size: 22px; font-weight: 800; color: #1a1a1a; }
+    .cat-hero-sub  { font-size: 13px; color: #888; }
+    .match-meter {
+      background: #f7f7f7;
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+    .match-meter .meter-label {
+      display: flex; justify-content: space-between;
+      font-size: 13px; font-weight: 600; color: #555;
+      margin-bottom: 8px;
+    }
+    .meter-track {
+      height: 10px; background: #e0e0e0;
+      border-radius: 99px; overflow: hidden;
+    }
+    .meter-fill { height: 100%; border-radius: 99px; }
+
+    .trait-list { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .trait-row {
+      display: flex; align-items: center;
+      background: #f9f9f9; border-radius: 12px;
+      padding: 12px 14px; gap: 12px;
+    }
+    .trait-emoji { font-size: 20px; }
+    .trait-body { flex: 1; }
+    .trait-name { font-size: 13px; font-weight: 700; color: #1a1a1a; margin-bottom: 2px; }
+    .trait-vals { font-size: 12px; color: #888; }
+    .trait-match { font-size: 18px; }
+
+    .tip-box {
+      margin: 0 16px 24px;
+      background: #fffbea;
+      border: 1px solid #FCC42350;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #5a4800;
+      line-height: 1.5;
+    }
+    .tip-box strong { display: block; margin-bottom: 4px; color: #1a1a1a; }
+
+    /* ─── Scroll padding ─────────────────────────── */
+    .scroll-pad { height: 30px; }
+
+    /* ─── Pill chip ──────────────────────────────── */
+    .pill { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+    .pill-green  { background: #e6f9ee; color: #0d7a3e; }
+    .pill-yellow { background: #fff8e0; color: #8a6000; }
+    .pill-red    { background: #ffe8e8; color: #cc2200; }
+  </style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 1 – Card stack (swipe view)
+  ══════════════════════════════════════════ -->
+  <div class="screen" id="screen-swipe">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+      <button class="icon-btn">⚙️</button>
+      <span class="logo">bumble</span>
+      <button class="icon-btn">🔍</button>
+    </div>
+
+    <!-- Card area -->
+    <div class="card-area" id="card-area">
+
+      <!-- Card 3 (back) -->
+      <div class="profile-card" style="transform:scale(0.93) translateY(14px); z-index:1; pointer-events:none;">
+        <div class="photo-placeholder" style="background: linear-gradient(160deg,#667eea,#764ba2);"></div>
+      </div>
+
+      <!-- Card 2 (middle) -->
+      <div class="profile-card" style="transform:scale(0.96) translateY(7px); z-index:2; pointer-events:none;">
+        <div class="photo-placeholder" style="background: linear-gradient(160deg,#f093fb,#f5576c);"></div>
+      </div>
+
+      <!-- Card 1 (top – active) -->
+      <div class="profile-card" id="top-card" style="z-index:3;">
+        <!-- avatar placeholder -->
+        <div class="photo-placeholder" style="background: linear-gradient(160deg,#43c6ac,#191654);">
+          <svg viewBox="0 0 100 100" width="160" opacity="0.25" fill="#fff">
+            <circle cx="50" cy="38" r="22"/>
+            <ellipse cx="50" cy="82" rx="34" ry="22"/>
+          </svg>
+        </div>
+        <div class="card-gradient"></div>
+        <div class="card-info">
+          <div class="name-age">Jordan, 26</div>
+          <div class="subtitle">Graphic designer · 3 miles away</div>
+          <!-- lifestyle badge -->
+          <div class="lifestyle-badge" id="badge-open-compat" onclick="showScreen('screen-compat')">
+            <span style="font-size:16px;">🌿</span>
+            <span class="pct">78%</span>
+            <span class="label">Lifestyle match</span>
+            <span class="chevron">›</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /card-area -->
+
+    <!-- Action buttons -->
+    <div class="action-bar">
+      <button class="action-btn btn-dislike" onclick="swipeCard('left')">✕</button>
+      <button class="action-btn btn-superlike">⭐</button>
+      <button class="action-btn btn-like" onclick="swipeCard('right')">♥</button>
+      <button class="action-btn btn-boost">⚡</button>
+    </div>
+
+    <!-- Bottom nav -->
+    <div class="bottom-nav">
+      <div class="nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M12 2 2 9.5V20h7v-6h6v6h7V9.5z"/></svg>
+        <span>Discover</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 12 4.09 5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54z"/></svg>
+        <span>Matches</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
+        <span>Chat</span>
+      </div>
+      <div class="nav-item">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 8 1.34 8 4v2H4v-2c0-2.66 5.3-4 8-4zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+        <span>Profile</span>
+      </div>
+    </div>
+
+  </div><!-- /screen-swipe -->
+
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 2 – Lifestyle compatibility detail
+  ══════════════════════════════════════════ -->
+  <div class="screen hidden" id="screen-compat">
+
+    <!-- Hero -->
+    <div class="compat-hero">
+      <button class="back-btn" onclick="goBack('screen-compat','screen-swipe')">← Jordan's profile</button>
+      <div class="hero-names">You &amp; Jordan</div>
+      <div class="big-pct">78<span>%</span></div>
+      <div class="hero-sub">Lifestyle compatibility · based on 6 areas</div>
+    </div>
+
+    <!-- Donut ring -->
+    <div class="ring-wrap">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        <circle cx="80" cy="80" r="64" fill="#fff" stroke="#f0f0f0" stroke-width="18"/>
+        <!-- full track -->
+        <circle cx="80" cy="80" r="64" fill="none" stroke="#f0f0f0" stroke-width="18"/>
+        <!-- fill (78% of circumference = 2πr * 0.78 = 313.7) -->
+        <circle cx="80" cy="80" r="64" fill="none"
+          stroke="#FCC423" stroke-width="18"
+          stroke-dasharray="313.7 402.1"
+          stroke-dashoffset="100.5"
+          stroke-linecap="round"
+          transform="rotate(-90 80 80)"/>
+        <text x="80" y="76" text-anchor="middle" font-size="28" font-weight="900" fill="#1a1a1a">78%</text>
+        <text x="80" y="96" text-anchor="middle" font-size="11" fill="#888">match</text>
+      </svg>
+    </div>
+
+    <!-- Category list -->
+    <div class="section-title">Compatibility breakdown</div>
+    <div class="category-list" id="category-list">
+
+      <div class="cat-card" onclick="showCategory('sleep')">
+        <div class="cat-icon" style="background:#eef6ff;">🌙</div>
+        <div class="cat-body">
+          <div class="cat-name">Sleep schedule</div>
+          <div class="cat-desc">Both night owls · 11 pm–7 am</div>
+        </div>
+        <div class="cat-pct-wrap">
+          <div class="cat-pct" style="color:#27ae60;">92%</div>
+          <div class="bar-track"><div class="bar-fill" style="width:92%;background:#27ae60;"></div></div>
+        </div>
+      </div>
+
+      <div class="cat-card" onclick="showCategory('diet')">
+        <div class="cat-icon" style="background:#fff0e0;">🥗</div>
+        <div class="cat-body">
+          <div class="cat-name">Diet &amp; food</div>
+          <div class="cat-desc">Flexitarian vs. vegetarian</div>
+        </div>
+        <div class="cat-pct-wrap">
+          <div class="cat-pct" style="color:#27ae60;">85%</div>
+          <div class="bar-track"><div class="bar-fill" style="width:85%;background:#27ae60;"></div></div>
+        </div>
+      </div>
+
+      <div class="cat-card" onclick="showCategory('activity')">
+        <div class="cat-icon" style="background:#fff0f8;">🏃</div>
+        <div class="cat-body">
+          <div class="cat-name">Activity level</div>
+          <div class="cat-desc">You: active daily · Jordan: 3×/week</div>
+        </div>
+        <div class="cat-pct-wrap">
+          <div class="cat-pct" style="color:#e67e22;">70%</div>
+          <div class="bar-track"><div class="bar-fill" style="width:70%;background:#e67e22;"></div></div>
+        </div>
+      </div>
+
+      <div class="cat-card" onclick="showCategory('social')">
+        <div class="cat-icon" style="background:#f0fff4;">🎉</div>
+        <div class="cat-body">
+          <div class="cat-name">Social energy</div>
+          <div class="cat-desc">Both ambivert leaning social</div>
+        </div>
+        <div class="cat-pct-wrap">
+          <div class="cat-pct" style="color:#27ae60;">88%</div>
+          <div class="bar-track"><div class="bar-fill" style="width:88%;background:#27ae60;"></div></div>
+        </div>
+      </div>
+
+      <div class="cat-card" onclick="showCategory('spending')">
+        <div class="cat-icon" style="background:#f5f0ff;">💰</div>
+        <div class="cat-body">
+          <div class="cat-name">Spending habits</div>
+          <div class="cat-desc">You: saver · Jordan: spender</div>
+        </div>
+        <div class="cat-pct-wrap">
+          <div class="cat-pct" style="color:#e74c3c;">52%</div>
+          <div class="bar-track"><div class="bar-fill" style="width:52%;background:#e74c3c;"></div></div>
+        </div>
+      </div>
+
+      <div class="cat-card" onclick="showCategory('cleanliness')">
+        <div class="cat-icon" style="background:#effffd;">🧹</div>
+        <div class="cat-body">
+          <div class="cat-name">Home &amp; cleanliness</div>
+          <div class="cat-desc">Both tidiness-focused</div>
+        </div>
+        <div class="cat-pct-wrap">
+          <div class="cat-pct" style="color:#27ae60;">80%</div>
+          <div class="bar-track"><div class="bar-fill" style="width:80%;background:#27ae60;"></div></div>
+        </div>
+      </div>
+
+    </div><!-- /category-list -->
+
+    <div class="scroll-pad"></div>
+
+  </div><!-- /screen-compat -->
+
+
+  <!-- ══════════════════════════════════════════
+       SCREEN 3 – Category drill-down (dynamic)
+  ══════════════════════════════════════════ -->
+  <div class="screen hidden" id="screen-category">
+
+    <div class="cat-hero" id="cat-hero-content"></div>
+    <div class="trait-list" id="cat-trait-list"></div>
+    <div class="tip-box" id="cat-tip"></div>
+    <div class="scroll-pad"></div>
+
+  </div><!-- /screen-category -->
+
+</div><!-- /phone -->
+
+<script>
+/* ─────────────────────────────────────────
+   Navigation helpers
+───────────────────────────────────────── */
+let history = [];
+
+function showScreen(id) {
+  const current = history[history.length - 1] || 'screen-swipe';
+  const prev = document.getElementById(current);
+  const next = document.getElementById(id);
+  prev.classList.add('exit');
+  next.classList.remove('hidden');
+  next.scrollTop = 0;
+  history.push(id);
+  setTimeout(() => { prev.classList.add('hidden'); prev.classList.remove('exit'); }, 350);
+}
+
+function goBack(fromId, toId) {
+  const from = document.getElementById(fromId);
+  const to   = document.getElementById(toId);
+  from.style.transition = 'transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s';
+  from.style.transform = 'translateX(100%)';
+  from.style.opacity   = '0';
+  to.classList.remove('hidden', 'exit');
+  to.style.transform = '';
+  to.style.opacity   = '';
+  setTimeout(() => {
+    from.classList.add('hidden');
+    from.style.transform = '';
+    from.style.opacity   = '';
+    from.style.transition = '';
+  }, 320);
+  history.pop();
+}
+
+/* ─────────────────────────────────────────
+   Category data
+───────────────────────────────────────── */
+const categories = {
+  sleep: {
+    icon: '🌙', bg: '#eef6ff', name: 'Sleep schedule', pct: 92, color: '#27ae60',
+    sub: 'You both prefer a similar rhythm',
+    traits: [
+      { emoji:'🛏️', name:'Bedtime',      you:'11 pm',     them:'11:30 pm', match: true },
+      { emoji:'⏰', name:'Wake-up',       you:'7 am',      them:'7 am',     match: true },
+      { emoji:'😴', name:'Nap habits',    you:'Rarely',    them:'Weekends', match: true },
+      { emoji:'📵', name:'Phone in bed',  you:'Sometimes', them:'Always',   match: false },
+    ],
+    tip: '💡 <strong>Great news!</strong> Shared sleep schedules reduce one of the most common sources of couple friction. Your morning energy levels align well.'
+  },
+  diet: {
+    icon: '🥗', bg: '#fff0e0', name: 'Diet & food', pct: 85, color: '#27ae60',
+    sub: 'Mostly compatible with minor differences',
+    traits: [
+      { emoji:'🌱', name:'Diet type',    you:'Flexitarian', them:'Vegetarian', match: true },
+      { emoji:'🍳', name:'Cooking freq', you:'5× / week',   them:'4× / week',  match: true },
+      { emoji:'🌶️', name:'Spice level',  you:'Medium',      them:'Very spicy', match: false },
+      { emoji:'🍷', name:'Alcohol',      you:'Occasionally', them:'Rarely',    match: true },
+    ],
+    tip: '💡 <strong>Mostly compatible!</strong> You can easily share meals. Jordan's vegetarian preference means plenty of overlap with your flexitarian diet.'
+  },
+  activity: {
+    icon: '🏃', bg: '#fff0f8', name: 'Activity level', pct: 70, color: '#e67e22',
+    sub: 'Some differences, but manageable',
+    traits: [
+      { emoji:'🏋️', name:'Gym',         you:'Daily',        them:'3× / week', match: false },
+      { emoji:'🚶', name:'Walking',      you:'Daily',        them:'Daily',     match: true  },
+      { emoji:'🧘', name:'Mindfulness',  you:'Never',        them:'Weekly',    match: false },
+      { emoji:'🤸', name:'Outdoor sport',you:'Weekends',     them:'Weekends',  match: true  },
+    ],
+    tip: '💡 <strong>Moderate match.</strong> You're more active than Jordan day-to-day, but you share outdoor weekend interests. Great for adventure dates!'
+  },
+  social: {
+    icon: '🎉', bg: '#f0fff4', name: 'Social energy', pct: 88, color: '#27ae60',
+    sub: 'You both enjoy people, with balance',
+    traits: [
+      { emoji:'🧠', name:'Introvert/Extrovert', you:'Ambivert',    them:'Ambivert',   match: true },
+      { emoji:'🥂', name:'Going out freq',      you:'2× / month',  them:'2× / month', match: true },
+      { emoji:'🏠', name:'Hosting',             you:'Love it',     them:'Love it',    match: true },
+      { emoji:'📞', name:'Calling vs texting',  you:'Text',        them:'Call',       match: false },
+    ],
+    tip: '💡 <strong>Strong social fit!</strong> You're both ambiverts who enjoy hosting and going out at a similar pace. Lots of shared social activities ahead.'
+  },
+  spending: {
+    icon: '💰', bg: '#f5f0ff', name: 'Spending habits', pct: 52, color: '#e74c3c',
+    sub: 'Noticeable differences – worth discussing',
+    traits: [
+      { emoji:'💸', name:'Money style',   you:'Saver',     them:'Spender',   match: false },
+      { emoji:'🍽️', name:'Eating out',   you:'Rarely',    them:'Often',     match: false },
+      { emoji:'✈️', name:'Travel budget', you:'Budget',    them:'Mid-range', match: false },
+      { emoji:'🛍️', name:'Impulse buys', you:'Rarely',    them:'Sometimes', match: true  },
+    ],
+    tip: '💡 <strong>Worth a conversation.</strong> Financial compatibility matters long-term. Many couples navigate different styles successfully with open communication and shared budgets.'
+  },
+  cleanliness: {
+    icon: '🧹', bg: '#effffd', name: 'Home & cleanliness', pct: 80, color: '#27ae60',
+    sub: 'Aligned on keeping a tidy space',
+    traits: [
+      { emoji:'🫧', name:'Tidiness',    you:'High',      them:'High',     match: true  },
+      { emoji:'🧽', name:'Cleaning',    you:'Weekly',    them:'Bi-weekly',match: false },
+      { emoji:'🌿', name:'Plants/decor',you:'Loves it',  them:'Loves it', match: true  },
+      { emoji:'🐾', name:'Pets',        you:'Dog owner', them:'Cat lover',match: true  },
+    ],
+    tip: '💡 <strong>Solid match!</strong> Shared tidiness standards prevent a huge source of roommate-style friction. You both care about a clean, welcoming home.'
+  }
+};
+
+function showCategory(key) {
+  const d = categories[key];
+  const matchCount = d.traits.filter(t => t.match).length;
+  const pill = pct =>
+    pct >= 80 ? 'pill-green' : pct >= 60 ? 'pill-yellow' : 'pill-red';
+
+  document.getElementById('cat-hero-content').innerHTML = `
+    <button class="back-btn" onclick="goBack('screen-category','screen-compat')" style="color:#333;">← Compatibility</button>
+    <div class="cat-header">
+      <div class="cat-hero-icon" style="background:${d.bg};">${d.icon}</div>
+      <div>
+        <div class="cat-hero-name">${d.name}</div>
+        <div class="cat-hero-sub">${d.sub}</div>
+      </div>
+    </div>
+    <div class="match-meter">
+      <div class="meter-label">
+        <span>Compatibility</span>
+        <span style="font-weight:800;color:${d.color};">${d.pct}%</span>
+      </div>
+      <div class="meter-track">
+        <div class="meter-fill" style="width:${d.pct}%;background:${d.color};"></div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('cat-trait-list').innerHTML =
+    d.traits.map(t => `
+      <div class="trait-row">
+        <div class="trait-emoji">${t.emoji}</div>
+        <div class="trait-body">
+          <div class="trait-name">${t.name}</div>
+          <div class="trait-vals">You: <strong>${t.you}</strong> · Jordan: <strong>${t.them}</strong></div>
+        </div>
+        <div class="trait-match">${t.match ? '✅' : '⚡'}</div>
+      </div>
+    `).join('');
+
+  document.getElementById('cat-tip').innerHTML = d.tip;
+
+  showScreen('screen-category');
+}
+
+/* ─────────────────────────────────────────
+   Swipe card animation
+───────────────────────────────────────── */
+function swipeCard(dir) {
+  const card = document.getElementById('top-card');
+  const x = dir === 'right' ? 500 : -500;
+  card.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.6,1), opacity 0.4s';
+  card.style.transform = `translateX(${x}px) rotate(${dir === 'right' ? 15 : -15}deg)`;
+  card.style.opacity = '0';
+  setTimeout(() => { card.style.display = 'none'; }, 420);
+}
+
+/* ─────────────────────────────────────────
+   Touch / drag swipe on card
+───────────────────────────────────────── */
+(function() {
+  const card = document.getElementById('top-card');
+  let startX = 0, curX = 0, dragging = false;
+
+  card.addEventListener('pointerdown', e => {
+    if (e.target.closest('.lifestyle-badge')) return;
+    startX = e.clientX; dragging = true;
+    card.setPointerCapture(e.pointerId);
+    card.style.transition = 'none';
+  });
+  card.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    curX = e.clientX - startX;
+    const rot = curX * 0.06;
+    card.style.transform = `translateX(${curX}px) rotate(${rot}deg)`;
+  });
+  card.addEventListener('pointerup', () => {
+    dragging = false;
+    if (Math.abs(curX) > 100) {
+      swipeCard(curX > 0 ? 'right' : 'left');
+    } else {
+      card.style.transition = 'transform 0.3s';
+      card.style.transform = '';
+    }
+    curX = 0;
+  });
+})();
+</script>
+</body>
+</html>
