@@ -1,0 +1,228 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Bumble Lifestyle Compatibility – CSS Custom Properties
+   Extracted from Figma: Advanced IxD – Project 2  (node 168:6011)
+
+   Usage: add  <link rel="stylesheet" href="variables.css">  to <head>
+          before your main stylesheet, then reference as var(--color-accent)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+
+  /* ── Colors: Primary ────────────────────────────────────────────────────
+     Near-black used for headings, body text, and dark CTA buttons.
+     Source: Figma variable --bumble-black                                 */
+  --color-primary:          #202020;
+  --color-primary-dark:     #020202;   /* home indicator / true black       */
+  --color-primary-logo:     #232323;   /* Bumble wordmark                   */
+  --color-primary-fg:       #ffffff;   /* foreground on primary surfaces    */
+
+
+  /* ── Colors: Accent ─────────────────────────────────────────────────────
+     Bumble's signature golden yellow — like button, ring chart, active nav,
+     lifestyle badge, hero backgrounds.                                     */
+  --color-accent:           #ffc300;   /* brand yellow                      */
+  --color-accent-warm:      #FCC423;   /* warmer tint (prototype / hero)    */
+  --color-accent-bright:    #fff765;   /* CTA gradient start                */
+  --color-accent-peach:     #fcaf8b;   /* CTA gradient mid                  */
+  --color-accent-orange:    #f5a623;   /* compat-hero gradient end          */
+  --color-accent-fg:        #202020;   /* text on accent surfaces           */
+  --color-accent-badge:     rgba(252, 196, 35, 0.92); /* lifestyle badge bg */
+
+
+  /* ── Colors: Secondary ──────────────────────────────────────────────────
+     Muted blue-gray for inactive nav labels and supporting text.
+     Source: Figma variable --medium-grey                                  */
+  --color-secondary:        #777f89;   /* inactive tabs, secondary labels   */
+  --color-secondary-mid:    #505050;   /* --medium-grey (% labels on pill)  */
+  --color-secondary-fg:     #ffffff;
+
+
+  /* ── Colors: Neutral scale ──────────────────────────────────────────────
+     Full ramp from near-black to white.                                   */
+  --color-neutral-900:      #020202;
+  --color-neutral-800:      #202020;   /* primary text                      */
+  --color-neutral-700:      #232323;   /* logo                              */
+  --color-neutral-600:      #505050;   /* medium gray                       */
+  --color-neutral-400:      #777f89;   /* blue-gray muted                   */
+  --color-neutral-300:      #d9d9d9;   /* tag chip backgrounds              */
+  --color-neutral-200:      #e0e0e0;   /* progress bar track                */
+  --color-neutral-150:      #eeeeee;   /* dividers                          */
+  --color-neutral-100:      #f3f3f3;   /* --bumble-light-grey-2 surfaces    */
+  --color-neutral-50:       #f9f9f9;   /* subtle row backgrounds            */
+  --color-neutral-0:        #ffffff;   /* white                             */
+
+
+  /* ── Colors: Compatibility status ──────────────────────────────────────
+     Used in score cards and category bars.                                */
+  --color-success:          #27ae60;
+  --color-success-bg:       #e6f9ee;
+  --color-success-text:     #0d7a3e;
+
+  --color-warning:          #e67e22;
+  --color-warning-bg:       #fff8e0;
+  --color-warning-text:     #8a6000;
+
+  --color-danger:           #e74c3c;
+  --color-danger-bg:        #ffe8e8;
+  --color-danger-text:      #cc2200;
+
+
+  /* ── Colors: Gradient stops ─────────────────────────────────────────────
+     Used in lifestyle progress bar and CTA button gradients.             */
+  --color-coral:            #ff6b6b;   /* lifestyle progress bar end        */
+  --color-pink:             #d42c75;   /* CTA button gradient end           */
+
+
+  /* ── Colors: Tip / insight box ─────────────────────────────────────────  */
+  --color-tip-bg:           #fffbea;
+  --color-tip-border:       rgba(252, 196, 35, 0.50);  /* accent @ 50%      */
+  --color-tip-text:         #5a4800;
+
+
+  /* ── Colors: Action buttons ────────────────────────────────────────────  */
+  --color-superlike:        #1dc8ff;
+  --color-boost:            #b45bff;
+  --color-dislike:          #ff5a5f;
+
+
+  /* ── Gradients ──────────────────────────────────────────────────────────
+     Named gradient definitions from the Figma design.                    */
+
+  /* Lifestyle match progress bar (pill component) */
+  --gradient-lifestyle:
+    linear-gradient(to left, var(--color-accent), var(--color-coral));
+
+  /* "See Compatibility Breakdown" CTA button */
+  --gradient-cta:
+    linear-gradient(
+      to right,
+      var(--color-accent-bright) 0%,
+      var(--color-accent-peach)  54%,
+      rgba(212, 44, 117, 0.50)   100%
+    );
+
+  /* Compatibility screen hero background */
+  --gradient-compat-hero:
+    linear-gradient(135deg, var(--color-accent-warm) 0%, var(--color-accent-orange) 100%);
+
+  /* Profile card bottom scrim (image overlay) */
+  --gradient-card-scrim:
+    linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 100%);
+
+  /* Card stack background placeholders */
+  --gradient-placeholder-1: linear-gradient(160deg, #43c6ac, #191654);
+  --gradient-placeholder-2: linear-gradient(160deg, #f093fb, #f5576c);
+  --gradient-placeholder-3: linear-gradient(160deg, #667eea, #764ba2);
+
+
+  /* ── Typography: Font families ──────────────────────────────────────────
+     Bumble Sans is Bumble's proprietary typeface (Bold, Semi Bold, Medium)
+     with a "Compact" optical size variant. Inter used for tag chips.     */
+  --font-bumble:   "Bumble Sans", ui-sans-serif, sans-serif;
+  --font-inter:    "Inter", ui-sans-serif, sans-serif;
+  --font-system:   -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", sans-serif;
+
+
+  /* ── Typography: Sizes (Figma named text styles) ────────────────────────
+     L6 Text   11px  Semi Bold  — nav tab labels
+     L4 Title  14px  Medium     — button text
+     L3 Title  16px  Semi Bold  — job/school, body
+     L2 Title  24px  Semi Bold  — profile name
+     Logo      34px  Bold       — Bumble wordmark
+     Hero      72px  Black      — large % display                          */
+  --text-nav:    11px;   /* L6 */
+  --text-label:  12px;   /* secondary labels, section titles */
+  --text-body:   13px;   /* general body copy */
+  --text-btn:    14px;   /* L4 — button text */
+  --text-status: 17px;   /* iOS status bar (SF Pro) */
+  --text-sub:    16px;   /* L3 — job, school, pill heading */
+  --text-title:  24px;   /* L2 — profile name */
+  --text-logo:   34px;   /* Bumble wordmark */
+  --text-hero:   72px;   /* compatibility big percentage */
+
+
+  /* ── Typography: Weights ────────────────────────────────────────────────  */
+  --weight-regular:   400;
+  --weight-medium:    500;   /* Bumble Sans Medium Compact */
+  --weight-semibold:  600;   /* Bumble Sans Semi Bold Compact */
+  --weight-bold:      700;   /* Bumble Sans Bold Compact */
+  --weight-extrabold: 800;
+  --weight-black:     900;
+
+
+  /* ── Typography: Line heights ───────────────────────────────────────────
+     Bumble Sans uses lineHeight: 100 (tight / compact) for all brand styles */
+  --leading-tight:  1;      /* Bumble Sans compact styles */
+  --leading-body:   1.45;   /* general reading */
+  --leading-status: 22px;   /* iOS status bar */
+
+
+  /* ── Spacing ────────────────────────────────────────────────────────────
+     Key layout values from component measurements in Figma.               */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-7:   28px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-14:  56px;
+  --space-16:  64px;
+  /* Non-standard offsets found in Figma components */
+  --space-gap-xs:  5px;    /* icon-to-label gap in nav                     */
+  --space-gap-sm:  6px;    /* nav item gaps                                */
+  --space-gap-md:  7px;    /* Levels group gap in status bar               */
+  --space-gap-lg: 14px;    /* category card internal gap                   */
+  --space-gap-xl: 18px;    /* action bar button gap                        */
+
+
+  /* ── Component sizing ───────────────────────────────────────────────────  */
+  --size-nav-tab-h:    91px;    /* bottom tab bar total height               */
+  --size-offer-h:      65px;    /* offer banner height                       */
+  --size-status-h:     62px;    /* iOS status bar height                     */
+  --size-pill-h:       39px;    /* lifestyle match pill height               */
+  --size-card-w:      383px;    /* profile card width                        */
+  --size-shell-w:     402px;    /* phone shell / design width                */
+  --size-card-h:      597px;    /* profile card height                       */
+  --size-action-btn:   56px;    /* standard action button                    */
+  --size-action-like:  66px;    /* like button (larger)                      */
+  --size-cat-icon:     44px;    /* category icon in list                     */
+  --size-cat-hero-icon: 52px;   /* category icon in drill-down hero          */
+
+
+  /* ── Border radius ──────────────────────────────────────────────────────
+     Extracted from Figma component border-radius properties.             */
+  --radius-xs:   5px;     /* pill label corner (top-left only)              */
+  --radius-sm:   10px;    /* tag chips, short button, home indicator        */
+  --radius-md:   15px;    /* offer banner, lifestyle pill                   */
+  --radius-lg:   16px;    /* match meter, backgrounds                       */
+  --radius-xl:   20px;    /* profile card, action buttons                   */
+  --radius-2xl:  24px;    /* profile card clip                              */
+  --radius-3xl:  32px;    /* progress bar                                   */
+  --radius-full: 9999px;  /* circles, pills                                 */
+
+
+  /* ── Shadows ─────────────────────────────────────────────────────────── */
+  --shadow-card:       0 4px 20px rgba(0, 0, 0, 0.15);
+  --shadow-badge:      0 2px 10px rgba(0, 0, 0, 0.30);
+  --shadow-action:     0 2px 10px rgba(0, 0, 0, 0.12);
+  --shadow-action-hover: 0 4px 16px rgba(0, 0, 0, 0.18);
+  --shadow-cat-card:   0 2px 12px rgba(0, 0, 0, 0.08);
+  --shadow-ring:       0 4px 16px rgba(0, 0, 0, 0.15);
+  --shadow-nav:        0 4px  4px rgba(0, 0, 0, 0.25);  /* active nav item */
+
+
+  /* ── Backdrop blur ───────────────────────────────────────────────────── */
+  --blur-nav:  blur(10px);  /* frosted-glass bottom tab bar                 */
+
+
+  /* ── Transitions ─────────────────────────────────────────────────────── */
+  --ease-bumble:  cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-screen: 350ms;   /* screen-to-screen navigation               */
+  --duration-card:   400ms;   /* card swipe                                */
+  --duration-quick:  150ms;   /* badge hover, button press                 */
+  --duration-bar:    600ms;   /* bar fill animation (with 200ms delay)     */
+}

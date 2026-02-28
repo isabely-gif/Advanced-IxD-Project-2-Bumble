@@ -1,756 +1,1017 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=375, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bumble – Lifestyle Compatibility</title>
+  <link rel="stylesheet" href="variables.css">
   <style>
-    /* ─── Reset ────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5f5;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
+    body { background: #d4d4d4; height: 100vh; overflow: hidden; font-family: var(--font-bumble); }
 
-    /* ─── Phone shell ───────────────────────────── */
-    .phone {
-      width: 375px;
-      min-height: 100vh;
-      background: #fff;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
+    /* ── Phone shell ── */
+    .phone { width: 402px; height: 874px; position: absolute; top: 50%; left: 50%; transform-origin: center center; overflow: hidden; border-radius: 56px; box-shadow: 0 24px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.08); }
 
-    /* ─── Screens ───────────────────────────────── */
-    .screen {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      background: #fff;
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s;
-    }
-    .screen.hidden  { transform: translateX(100%); opacity: 0; pointer-events: none; }
-    .screen.exit    { transform: translateX(-60%); opacity: 0; pointer-events: none; }
+    /* ── Screen system ── */
+    .screen { position: absolute; inset: 0; display: none; flex-direction: column; background: #fff; overflow: hidden; }
+    .screen.active { display: flex; }
 
-    /* ─── Bumble nav bar ────────────────────────── */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 18px 10px;
-      background: #fff;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    .top-bar .logo {
-      font-size: 22px;
-      font-weight: 800;
-      color: #FCC423;
-      letter-spacing: -0.5px;
-    }
-    .top-bar .icon-btn {
-      width: 36px; height: 36px;
-      border: none; background: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 50%;
-      color: #333;
-    }
-    .top-bar .icon-btn:hover { background: #f5f5f5; }
+    /* ── Status bar ── */
+    .statusbar { flex-shrink: 0; height: 62px; display: flex; align-items: center; justify-content: space-between; padding: 21px 24px 19px; background: transparent; position: relative; z-index: 5; }
+    .stime { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; font-size: 17px; font-weight: 600; line-height: 22px; color: #000; letter-spacing: -0.3px; }
+    .sicons { display: flex; align-items: center; gap: 7px; }
+    .sicons img { display: block; object-fit: contain; }
+    .icon-cell { width: 19px; height: 12px; }
+    .icon-wifi { width: 17px; height: 12px; }
+    .icon-bat  { width: 27px; height: 13px; }
 
-    /* ─── SCREEN 1 – Card stack ─────────────────── */
-    #screen-swipe .card-area {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-    }
+    /* ── App header ── */
+    .appheader { flex-shrink: 0; height: 38px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; background: #fff; }
+    .wordmark { font-family: var(--font-bumble); font-size: 30px; font-weight: 700; line-height: 1; color: var(--color-primary-logo); letter-spacing: -0.5px; }
+    .filterbtn { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; padding: 0; }
+    .filterbtn img { width: 26px; height: 26px; object-fit: contain; display: block; }
 
-    .profile-card {
-      position: absolute;
-      inset: 12px;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      cursor: grab;
-      user-select: none;
-      background: #111;
-    }
-    .profile-card .photo {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    /* placeholder photo via gradient */
-    .profile-card .photo-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .profile-card .card-gradient {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 55%;
-      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
-    }
-    .profile-card .card-info {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 16px 18px 18px;
-      color: #fff;
-    }
-    .card-info .name-age {
-      font-size: 26px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .card-info .subtitle {
-      font-size: 13px;
-      opacity: 0.85;
-      margin-bottom: 10px;
-    }
+    /* ── Back header ── */
+    .backheader { flex-shrink: 0; height: 44px; display: flex; align-items: center; padding: 0 16px; background: #fff; }
+    .backbtn { width: 32px; height: 32px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #000; }
+    .backbtn img { width: 20px; height: 20px; object-fit: contain; }
+    .backheader-title { flex: 1; text-align: center; font-size: 16px; font-weight: 600; color: var(--color-primary); }
+    .backheader-right { width: 32px; height: 32px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .backheader-right img { width: 20px; height: 20px; object-fit: contain; }
 
-    /* ─── Lifestyle badge on card ───────────────── */
-    .lifestyle-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: rgba(252, 196, 35, 0.92);
-      border-radius: 20px;
-      padding: 6px 12px;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-    .lifestyle-badge:hover { transform: scale(1.03); box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-    .lifestyle-badge:active { transform: scale(0.97); }
-    .lifestyle-badge .pct {
-      font-size: 15px;
-      font-weight: 800;
-      color: #1a1a1a;
-    }
-    .lifestyle-badge .label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
-    .lifestyle-badge .chevron {
-      font-size: 10px;
-      color: #1a1a1a;
-      opacity: 0.7;
-    }
+    /* ── Offer row ── */
+    .offerrow { flex-shrink: 0; position: relative; height: 56px; margin: 0 12px 8px; }
+    .offerbanner { position: absolute; inset: 0; background: var(--color-neutral-100); border-radius: var(--radius-sm); display: flex; align-items: center; padding: 0 104px 0 14px; }
+    .offertext { font-family: var(--font-bumble); font-size: 14px; font-weight: 600; line-height: 1.3; color: #000; }
+    .offerbtn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 88px; height: 34px; background: var(--color-primary); color: #fff; border: none; border-radius: var(--radius-full); font-family: var(--font-bumble); font-size: 13px; font-weight: 600; cursor: pointer; }
 
-    /* ─── Action buttons ────────────────────────── */
-    .action-bar {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 18px;
-      padding: 14px 20px 20px;
-      background: #fff;
-    }
-    .action-btn {
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-      transition: transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
-    }
-    .action-btn:hover  { transform: scale(1.08); box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
-    .action-btn:active { transform: scale(0.93); }
-    .btn-dislike { background: #fff; color: #ff5a5f; font-size: 26px; }
-    .btn-like    { background: #FCC423; color: #fff; width: 66px; height: 66px; font-size: 28px; }
-    .btn-superlike { background: #fff; color: #1dc8ff; }
-    .btn-boost   { background: #fff; color: #b45bff; }
+    /* ── Card area ── */
+    .cardarea { flex: 1; position: relative; overflow: hidden; }
+    .card { position: absolute; top: 8px; bottom: 5px; left: 9px; right: 9px; border-radius: var(--radius-2xl); overflow: hidden; }
+    .card-back-2 { background: #e0e0e0; transform: scale(0.92) translateY(-14px); transform-origin: top center; z-index: 0; }
+    .card-back-1 { background: #ebebeb; transform: scale(0.96) translateY(-7px); transform-origin: top center; z-index: 1; }
+    .card-top { background: var(--color-neutral-900); z-index: 2; cursor: grab; user-select: none; touch-action: none; }
+    .card-top:active { cursor: grabbing; }
+    .cardphoto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; pointer-events: none; }
+    .uploadbtn { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; z-index: 4; background: rgba(0,0,0,0.38); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .cardscrim { position: absolute; bottom: 0; left: 0; right: 0; height: 55%; background: var(--gradient-card-scrim); pointer-events: none; z-index: 2; }
+    .swipestamp { position: absolute; top: 28px; z-index: 10; font-family: var(--font-bumble); font-size: 32px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; border: 4px solid; border-radius: 6px; padding: 4px 12px; opacity: 0; pointer-events: none; transition: opacity 0.1s; }
+    .stamp-like { left: 20px; color: #4caf50; border-color: #4caf50; transform: rotate(-15deg); }
+    .stamp-nope { right: 20px; color: var(--color-dislike); border-color: var(--color-dislike); transform: rotate(15deg); }
+    .cardinfo { position: absolute; bottom: 84px; left: 13px; right: 13px; z-index: 3; pointer-events: none; }
+    .cardname { font-family: var(--font-bumble); font-size: 26px; font-weight: 600; line-height: 31px; color: #fff; margin-bottom: 10px; }
+    .carddetail { display: flex; align-items: center; gap: 8px; height: 24px; margin-bottom: 7px; }
+    .carddetail:last-child { margin-bottom: 0; }
+    .dicon { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; display: block; }
+    .dtext { font-family: var(--font-bumble); font-size: 16px; font-weight: 600; line-height: 1; color: #fff; }
+    .cardactions { position: absolute; bottom: 18px; left: 13px; right: 13px; z-index: 4; display: flex; justify-content: space-between; align-items: flex-end; pointer-events: none; }
+    .likebtn, .sswipenbt { pointer-events: auto; background: none; border: none; padding: 0; cursor: pointer; display: block; }
+    .likebtn img { width: 44px; height: 44px; display: block; object-fit: contain; }
+    .sswipenbt img { width: 44px; height: 44px; display: block; object-fit: contain; }
 
-    /* ─── Bottom nav ────────────────────────────── */
-    .bottom-nav {
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0 18px;
-      border-top: 1px solid #f0f0f0;
-      background: #fff;
-    }
-    .nav-item {
-      display: flex; flex-direction: column;
-      align-items: center; gap: 3px;
-      font-size: 9px; color: #aaa;
-      cursor: pointer;
-    }
-    .nav-item.active { color: #FCC423; }
-    .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
+    /* ── Lifestyle match pill on card ── */
+    .lmbadge { position: absolute; bottom: 172px; left: 13px; right: 13px; z-index: 4; cursor: pointer; pointer-events: auto; }
+    .lmpill { background: rgba(243,243,243,0.95); border-radius: 15px; border-top-left-radius: 5px; padding: 8px 12px; display: flex; flex-direction: column; gap: 5px; }
+    .lmprow { display: flex; justify-content: space-between; align-items: center; }
+    .lmlabel { font-family: var(--font-bumble); font-size: 13px; font-weight: 700; color: var(--color-primary); }
+    .lmpct { font-family: var(--font-bumble); font-size: 13px; font-weight: 700; color: var(--color-secondary-mid); }
+    .lmtrack { height: 6px; background: var(--color-neutral-200); border-radius: 100px; overflow: hidden; }
+    .lmfill { height: 100%; background: var(--gradient-lifestyle); border-radius: 100px; }
+    .lmtags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .lmtag { background: rgba(255,255,255,0.9); border-radius: 100px; padding: 2px 8px; font-size: 11px; font-weight: 500; color: var(--color-primary); border: 1px solid rgba(0,0,0,0.1); }
 
-    /* ─── SCREEN 2 – Compatibility detail ──────── */
-    #screen-compat {
-      background: #fff;
-      overflow-y: auto;
-    }
-    .compat-hero {
-      background: linear-gradient(135deg, #FCC423 0%, #f5a623 100%);
-      padding: 28px 24px 32px;
-      position: relative;
-    }
-    .back-btn {
-      background: none; border: none; cursor: pointer;
-      font-size: 22px; color: #fff; padding: 0;
-      margin-bottom: 16px;
-      display: flex; align-items: center; gap: 6px;
-      font-weight: 600; font-size: 15px;
-    }
-    .compat-hero .hero-names {
-      font-size: 18px;
-      font-weight: 700;
-      color: rgba(0,0,0,0.65);
-      margin-bottom: 6px;
-    }
-    .compat-hero .big-pct {
-      font-size: 72px;
-      font-weight: 900;
-      color: #1a1a1a;
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-    .compat-hero .big-pct span { font-size: 36px; }
-    .compat-hero .hero-sub {
-      font-size: 14px;
-      color: rgba(0,0,0,0.6);
-      font-weight: 500;
-    }
+    /* ── Upgrade CTA bar ── */
+    .upgcta { flex-shrink: 0; margin: 0 9px 6px; padding: 10px 16px; background: var(--gradient-cta); border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .upgcta-text { font-size: 13px; font-weight: 600; color: var(--color-primary); }
 
-    /* ─── Ring chart ─────────────────────────────── */
-    .ring-wrap {
-      display: flex;
-      justify-content: center;
-      margin-top: -40px;
-      margin-bottom: 24px;
-    }
-    .ring-wrap svg { filter: drop-shadow(0 4px 16px rgba(0,0,0,0.15)); }
+    /* ── Bottom nav ── */
+    .bottomnav { flex-shrink: 0; height: 91px; background: rgba(255,255,255,0.85); backdrop-filter: var(--blur-nav); -webkit-backdrop-filter: var(--blur-nav); display: flex; flex-direction: column; align-items: center; padding: 0 16px; }
+    .navtabs { width: 100%; height: 65px; display: flex; align-items: stretch; justify-content: space-between; }
+    .navitem { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px 0; background: none; border: none; cursor: pointer; overflow: hidden; color: var(--color-secondary); }
+    .navitem.active { color: var(--color-primary); }
+    .navitem--profile { box-shadow: var(--shadow-nav); }
+    .navicon { position: relative; width: 25px; height: 25px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .navicon img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .navicon--people img { width: 37.8px; height: 37.8px; position: absolute; top: -7px; left: -6.5px; }
+    .navlabel { font-family: var(--font-bumble); font-size: 11px; font-weight: 600; line-height: 1; color: inherit; text-align: center; width: 72px; white-space: nowrap; }
+    .homeindicator { width: 100%; height: 16px; display: flex; align-items: center; justify-content: center; }
+    .homeindbar { width: 134px; height: 5px; background: var(--color-primary-dark); border-radius: var(--radius-sm); }
 
-    /* ─── Category cards ────────────────────────── */
-    .section-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      padding: 0 20px 10px;
-    }
-    .category-list { padding: 0 16px; display: flex; flex-direction: column; gap: 10px; }
-    .cat-card {
-      background: #fff;
-      border: 1px solid #eee;
-      border-radius: 14px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      cursor: pointer;
-      transition: box-shadow 0.15s;
-    }
-    .cat-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-    .cat-icon {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-    .cat-body { flex: 1; min-width: 0; }
-    .cat-name { font-size: 14px; font-weight: 700; color: #1a1a1a; margin-bottom: 3px; }
-    .cat-desc { font-size: 12px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .cat-pct-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
-    .cat-pct { font-size: 17px; font-weight: 800; }
-    .bar-track {
-      width: 60px; height: 5px;
-      background: #eee;
-      border-radius: 99px;
-      overflow: hidden;
-    }
-    .bar-fill { height: 100%; border-radius: 99px; transition: width 0.6s 0.2s; }
+    /* ════════════════ SCREEN 2 – Feature Explanation ════════════════ */
+    .feat-overlay { position: absolute; inset: 0; background: rgba(68,66,66,0.55); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; gap: 16px; }
+    .feat-tooltip { background: rgba(255,255,255,0.96); border-radius: 16px; padding: 16px 20px; max-width: 240px; text-align: center; }
+    .feat-tooltip p { font-size: 14px; font-weight: 600; color: var(--color-primary); line-height: 1.45; }
+    .feat-arrows { display: flex; justify-content: space-between; width: 290px; }
+    .feat-arrows img { width: 52px; object-fit: contain; }
 
-    /* ─── SCREEN 3 – Category drill-down ───────── */
-    #screen-category {
-      background: #fff;
-      overflow-y: auto;
-    }
-    .cat-hero {
-      padding: 24px 20px 20px;
-      border-bottom: 1px solid #f0f0f0;
-    }
-    .cat-hero .cat-header {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
-    }
-    .cat-hero-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px;
-    }
-    .cat-hero-name { font-size: 22px; font-weight: 800; color: #1a1a1a; }
-    .cat-hero-sub  { font-size: 13px; color: #888; }
-    .match-meter {
-      background: #f7f7f7;
-      border-radius: 16px;
-      padding: 14px 16px;
-    }
-    .match-meter .meter-label {
-      display: flex; justify-content: space-between;
-      font-size: 13px; font-weight: 600; color: #555;
-      margin-bottom: 8px;
-    }
-    .meter-track {
-      height: 10px; background: #e0e0e0;
-      border-radius: 99px; overflow: hidden;
-    }
-    .meter-fill { height: 100%; border-radius: 99px; }
+    /* ════════════════ SCREEN 3 – Micro Preferences ════════════════ */
+    .prefcard { flex: 1; margin: 8px; background: #fff7d4; border-radius: 24px; display: flex; flex-direction: column; padding: 20px 18px; overflow: hidden; }
+    .prefheader { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .preflogo img { height: 26px; object-fit: contain; }
+    .prefdots { display: flex; gap: 5px; }
+    .prefdot { width: 8px; height: 8px; border-radius: 50%; background: rgba(0,0,0,0.18); }
+    .prefdot.on { background: var(--color-primary); }
+    .prefq { font-family: var(--font-bumble); font-size: 18px; font-weight: 700; color: var(--color-primary); line-height: 1.35; margin-bottom: 20px; }
+    .prefopts { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .prefopt { display: flex; align-items: center; gap: 12px; padding: 11px 14px; background: rgba(255,255,255,0.6); border-radius: 12px; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
+    .prefopt.sel { background: #fbdc60; border-color: #e5c400; }
+    .prefopt-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(0,0,0,0.12); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--color-primary); flex-shrink: 0; }
+    .prefopt.sel .prefopt-num { background: var(--color-primary); color: #fff; }
+    .prefopt-text { font-size: 14px; font-weight: 500; color: var(--color-primary); }
+    .prefnext { margin-top: 14px; width: 100%; padding: 14px; background: var(--color-primary); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 700; cursor: pointer; font-family: var(--font-bumble); flex-shrink: 0; }
 
-    .trait-list { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-    .trait-row {
-      display: flex; align-items: center;
-      background: #f9f9f9; border-radius: 12px;
-      padding: 12px 14px; gap: 12px;
-    }
-    .trait-emoji { font-size: 20px; }
-    .trait-body { flex: 1; }
-    .trait-name { font-size: 13px; font-weight: 700; color: #1a1a1a; margin-bottom: 2px; }
-    .trait-vals { font-size: 12px; color: #888; }
-    .trait-match { font-size: 18px; }
+    /* ════════════════ SCREEN 6 – Match Confirmation ════════════════ */
+    .matchbg { flex: 1; background: #fbdc60; display: flex; flex-direction: column; align-items: center; padding: 16px; overflow: hidden; position: relative; }
+    .match-back { position: absolute; top: 12px; left: 12px; width: 36px; height: 36px; background: rgba(255,255,255,0.4); border: none; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; color: var(--color-primary); }
+    .matchphotos { position: relative; width: 280px; height: 210px; margin: 32px auto 12px; flex-shrink: 0; }
+    .mphotol { position: absolute; left: 0; top: 20px; width: 155px; height: 175px; object-fit: cover; object-position: center top; border: 4px solid #fff; border-radius: 12px; transform: rotate(-15deg); transform-origin: bottom right; }
+    .mphoto-r { position: absolute; right: 0; top: 0; width: 155px; height: 175px; object-fit: cover; object-position: center top; border: 4px solid #fff; border-radius: 12px; transform: rotate(15deg); transform-origin: bottom left; }
+    .matchtitle { font-size: 22px; font-weight: 700; color: var(--color-primary); text-align: center; line-height: 1.3; padding: 0 12px; margin-bottom: 16px; }
+    .match-lmpill { width: 100%; padding: 12px 16px; background: #fdde62; border-radius: var(--radius-md); border-top-left-radius: var(--radius-xs); margin-bottom: 10px; }
+    .match-lmprow { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .match-lmlabel { font-size: 11px; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.5px; }
+    .match-lmpct { font-size: 18px; font-weight: 800; color: var(--color-primary); }
+    .matchbtns { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: auto; }
+    .matchbtn-primary { width: 100%; padding: 14px; background: var(--color-primary); color: #fff; border: none; border-radius: var(--radius-full); font-size: 16px; font-weight: 700; cursor: pointer; font-family: var(--font-bumble); }
+    .matchbtn-grad { padding: 10px 24px; background: var(--gradient-cta); border: none; border-radius: var(--radius-full); font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--font-bumble); color: var(--color-primary); align-self: flex-end; }
 
-    .tip-box {
-      margin: 0 16px 24px;
-      background: #fffbea;
-      border: 1px solid #FCC42350;
-      border-radius: 14px;
-      padding: 14px 16px;
-      font-size: 13px;
-      color: #5a4800;
-      line-height: 1.5;
-    }
-    .tip-box strong { display: block; margin-bottom: 4px; color: #1a1a1a; }
+    /* ════════════════ SCREEN 7 – Premium Gating ════════════════ */
+    .prempopup { flex: 1; margin: 0 4px 4px; background: #fff7d4; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; padding: 16px 18px 18px; overflow: hidden; position: relative; }
+    .prem-subtitle { text-align: center; font-size: 16px; font-weight: 600; color: var(--color-primary); margin-bottom: 12px; }
+    .prem-backbtn { position: absolute; top: 12px; left: 14px; width: 28px; height: 28px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .prem-backbtn img { width: 20px; height: 20px; object-fit: contain; }
+    .prem-pills { position: relative; height: 190px; flex-shrink: 0; margin: 0 0 14px; }
+    .prempill { position: absolute; padding: 10px 18px; border-radius: 100px; background: #fbdc60; font-size: 14px; font-weight: 600; color: var(--color-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1); white-space: normal; max-width: 300px; line-height: 1.3; }
+    .prem-body { font-size: 22px; font-weight: 700; color: var(--color-primary); line-height: 1.3; margin-bottom: 20px; flex: 1; display: flex; align-items: center; }
+    .prembtn-primary { width: 100%; padding: 15px; background: var(--color-primary); color: #fff; border: none; border-radius: var(--radius-full); font-size: 17px; font-weight: 700; cursor: pointer; font-family: var(--font-bumble); margin-bottom: 10px; flex-shrink: 0; }
+    .prembtn-secondary { width: 100%; padding: 15px; background: transparent; color: var(--color-primary); border: 2px solid var(--color-primary); border-radius: var(--radius-full); font-size: 17px; font-weight: 700; cursor: pointer; font-family: var(--font-bumble); flex-shrink: 0; }
 
-    /* ─── Scroll padding ─────────────────────────── */
-    .scroll-pad { height: 30px; }
+    /* ════════════════ SCREEN 8 – Chat Screen ════════════════ */
+    .chatcontent { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 24px 20px; gap: 12px; }
+    .chat-avatar { width: 126px; height: 126px; border-radius: 50%; object-fit: cover; cursor: pointer; }
+    .chatname { font-size: 34px; font-weight: 700; color: var(--color-primary); text-align: center; cursor: pointer; }
+    .chattimer { font-size: 14px; font-weight: 500; color: #be3c1e; text-align: center; }
+    .sendbottom { flex-shrink: 0; padding: 8px 12px; border-top: 1px solid var(--color-neutral-150); display: flex; align-items: center; gap: 10px; background: #fff; }
+    .sendbottom-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sendbottom-icon img { width: 22px; height: 22px; object-fit: contain; }
+    .sendbottom-input { flex: 1; height: 38px; background: var(--color-neutral-100); border: 1.5px solid var(--color-neutral-150); border-radius: 19px; padding: 0 14px; font-size: 14px; color: var(--color-primary); outline: none; font-family: var(--font-bumble); }
+    .sendbottom-input::placeholder { color: var(--color-secondary); }
 
-    /* ─── Pill chip ──────────────────────────────── */
-    .pill { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 600; }
-    .pill-green  { background: #e6f9ee; color: #0d7a3e; }
-    .pill-yellow { background: #fff8e0; color: #8a6000; }
-    .pill-red    { background: #ffe8e8; color: #cc2200; }
+    /* ════════════════ SCREEN 9 – Chat List ════════════════ */
+    .chatlist-inner { flex: 1; overflow-y: auto; scrollbar-width: none; }
+    .chatlist-inner::-webkit-scrollbar { display: none; }
+    .chats-title-row { padding: 12px 22px 4px; display: flex; justify-content: space-between; align-items: center; }
+    .chats-title { font-size: 24px; font-weight: 700; color: var(--color-primary); }
+    .chats-search { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .chats-search img { width: 22px; height: 22px; object-fit: contain; }
+    .chatssec-label { padding: 10px 22px 4px; font-size: 14px; font-weight: 600; color: var(--color-primary); }
+    .matches-row { display: flex; padding: 6px 22px 12px; gap: 12px; overflow-x: auto; scrollbar-width: none; }
+    .matches-row::-webkit-scrollbar { display: none; }
+    .match-thumb-wrap { position: relative; flex-shrink: 0; }
+    .match-thumb { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; filter: blur(6px); background: #ddd; display: block; }
+    .match-badge { position: absolute; top: -4px; right: -4px; background: #fbdc60; border: 2px solid #fff; color: var(--color-primary); font-size: 10px; font-weight: 700; border-radius: 100px; padding: 2px 5px; }
+    .chatrow { display: flex; align-items: center; padding: 10px 22px; gap: 12px; cursor: pointer; border-bottom: 1px solid var(--color-neutral-100); }
+    .chatrow:active { background: #fafafa; }
+    .chatrow-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex-shrink: 0; position: relative; }
+    .chatrow-compat { position: absolute; bottom: 0; left: 0; background: #fbdc60; border: 2px solid #fff; border-radius: 100px; font-size: 10px; font-weight: 700; color: var(--color-primary); padding: 1px 5px; }
+    .chatrow-body { flex: 1; min-width: 0; }
+    .chatrow-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2px; }
+    .chatrow-name { font-size: 16px; font-weight: 700; color: var(--color-primary); }
+    .chatrow-pill { background: var(--color-neutral-100); border-radius: 100px; padding: 2px 10px; font-size: 11px; font-weight: 600; color: var(--color-secondary); flex-shrink: 0; }
+    .chatrow-preview { font-size: 13px; color: var(--color-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chatrow-expiry { font-size: 12px; color: var(--color-secondary); }
+    .chatrow-expiry strong { color: #be3c1e; font-weight: 700; }
+    .chatrow-avwrap { position: relative; flex-shrink: 0; }
+
+    /* ════════════════ SCREEN 11 – Matched Profile ════════════════ */
+    .matched-topinfo { padding: 6px 22px 0; flex-shrink: 0; }
+    .matched-name { font-size: 24px; font-weight: 700; color: var(--color-primary); margin-bottom: 4px; }
+    .matched-detail { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+    .matched-detail-icon { width: 18px; height: 18px; object-fit: contain; }
+    .matched-detail-text { font-size: 15px; font-weight: 600; color: var(--color-primary); }
+    .matched-card-area { position: relative; flex: 1; margin: 8px 9px 0; min-height: 0; }
+    .matched-card { position: absolute; inset: 0; border-radius: 24px; overflow: hidden; }
+    .matched-card-photo { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+    .matched-card-scrim { position: absolute; bottom: 0; left: 0; right: 0; height: 45%; background: var(--gradient-card-scrim); pointer-events: none; }
+    .matched-lmpill { position: absolute; bottom: 16px; left: 13px; right: 13px; background: rgba(243,243,243,0.95); border-radius: var(--radius-md); border-top-left-radius: var(--radius-xs); padding: 8px 12px; display: flex; flex-direction: column; gap: 5px; }
+    .matched-ctabtn { flex-shrink: 0; margin: 8px 9px 0; padding: 10px 20px; background: var(--gradient-cta); border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 700; cursor: pointer; font-family: var(--font-bumble); color: var(--color-primary); text-align: center; }
+
+    /* ════════════════ SCREEN 12 – Matched Compatibility ════════════════ */
+    .compat-statusbar { flex-shrink: 0; height: 62px; display: flex; align-items: center; justify-content: space-between; padding: 21px 24px 19px; background: #fff; position: relative; z-index: 5; }
+    .compat-scroll { flex: 1; overflow-y: auto; scrollbar-width: none; background: #fff7d4; }
+    .compat-scroll::-webkit-scrollbar { display: none; }
+    .compat-topblock { padding: 8px 16px 0; }
+    .compat-backbtn { width: 32px; height: 32px; background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+    .compat-backbtn img { width: 20px; height: 20px; object-fit: contain; }
+    .compat-photos { position: relative; height: 200px; margin: 12px auto; width: 280px; }
+    .compat-photol { position: absolute; left: 0; top: 16px; width: 140px; height: 160px; object-fit: cover; border: 4px solid #fff; border-radius: 10px; transform: rotate(-15deg); transform-origin: bottom right; }
+    .compat-photor { position: absolute; right: 0; top: 0; width: 140px; height: 160px; object-fit: cover; border: 4px solid #fff; border-radius: 10px; transform: rotate(15deg); transform-origin: bottom left; }
+    .compat-heading { font-size: 22px; font-weight: 700; color: var(--color-primary); text-align: center; padding: 0 20px; margin: 8px 0 12px; }
+    .compat-lmpill { margin: 0 16px 16px; background: var(--color-neutral-100); border-radius: var(--radius-md); border-top-left-radius: var(--radius-xs); padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
+    .compat-chart-wrap { margin: 0 16px 16px; background: rgba(255,255,255,0.5); border-radius: 20px; padding: 16px 12px; }
+    .compat-chart { position: relative; margin: 0 auto; max-width: 300px; }
+    .compat-chart-imgs { position: relative; height: 200px; }
+    .compat-chart-imgs img { position: absolute; transform-origin: center; }
+    .compat-chart-labels { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin-top: 10px; }
+    .compat-chart-label { font-size: 12px; font-weight: 600; color: var(--color-primary); text-align: center; line-height: 1.3; }
+    .compat-chart-label span { display: block; font-size: 13px; font-weight: 700; color: var(--color-success); }
+    .score-cards { padding: 0 16px 80px; display: flex; flex-direction: column; gap: 12px; }
+    .scorecard { background: #ffecae; border: 1.5px solid var(--color-accent); border-radius: 16px; padding: 14px 14px 12px; }
+    .scorecard-cat { display: inline-block; background: var(--color-accent); border-radius: 8px; padding: 6px 12px; font-size: 14px; font-weight: 700; color: var(--color-primary); margin-bottom: 10px; }
+    .scorecard-bullets { display: flex; flex-direction: column; gap: 5px; }
+    .scorecard-bullet { font-size: 13px; color: var(--color-primary); line-height: 1.4; padding-left: 14px; position: relative; }
+    .scorecard-bullet::before { content: "•"; position: absolute; left: 3px; color: var(--color-primary); font-weight: 700; }
   </style>
 </head>
 <body>
 <div class="phone">
 
-  <!-- ══════════════════════════════════════════
-       SCREEN 1 – Card stack (swipe view)
-  ══════════════════════════════════════════ -->
-  <div class="screen" id="screen-swipe">
-
-    <!-- Top bar -->
-    <div class="top-bar">
-      <button class="icon-btn">⚙️</button>
-      <span class="logo">bumble</span>
-      <button class="icon-btn">🔍</button>
+<!-- ══════════════════════════════════════════════════
+     S1 · Original State — Kevin, 31 swipe card
+══════════════════════════════════════════════════ -->
+<div class="screen active" id="s1">
+  <div class="statusbar">
+    <span class="stime">9:41</span>
+    <div class="sicons">
+      <img class="icon-cell" src="https://www.figma.com/api/mcp/asset/d36add2d-8ce5-4f01-8849-48e5c6467ac3" alt="">
+      <img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/ccf5b615-df60-4157-92ca-88905f790821" alt="">
+      <img class="icon-bat"  src="https://www.figma.com/api/mcp/asset/5885da50-33cc-463c-b531-782cd39d2bcd" alt="">
     </div>
-
-    <!-- Card area -->
-    <div class="card-area" id="card-area">
-
-      <!-- Card 3 (back) -->
-      <div class="profile-card" style="transform:scale(0.93) translateY(14px); z-index:1; pointer-events:none;">
-        <div class="photo-placeholder" style="background: linear-gradient(160deg,#667eea,#764ba2);"></div>
+  </div>
+  <div class="appheader">
+    <span class="wordmark">Bumble</span>
+    <button class="filterbtn"><img src="https://www.figma.com/api/mcp/asset/f14e4219-2114-4685-b451-cc85c99b4ec9" alt=""></button>
+  </div>
+  <div class="offerrow">
+    <div class="offerbanner"><p class="offertext">Check out a deeper lifestyle analysis for $2.99</p></div>
+    <button class="offerbtn">Get offer</button>
+  </div>
+  <div class="cardarea">
+    <div class="card card-back-2" aria-hidden="true"><img class="cardphoto" src="assets/Amy.jpg" alt=""></div>
+    <div class="card card-back-1" aria-hidden="true"><img class="cardphoto" src="assets/Will.jpg" alt=""></div>
+    <div class="card card-top" id="s1card">
+      <img class="cardphoto" src="assets/Kevin.jpg" alt="Kevin">
+      <div class="uploadbtn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M8 2L4.5 6H7V11H9V6H11.5L8 2Z" fill="white"/>
+          <rect x="3" y="12.5" width="10" height="1.5" rx="0.75" fill="white"/>
+        </svg>
       </div>
-
-      <!-- Card 2 (middle) -->
-      <div class="profile-card" style="transform:scale(0.96) translateY(7px); z-index:2; pointer-events:none;">
-        <div class="photo-placeholder" style="background: linear-gradient(160deg,#f093fb,#f5576c);"></div>
+      <div class="cardscrim"></div>
+      <div class="swipestamp stamp-like" id="s1sl">Like</div>
+      <div class="swipestamp stamp-nope" id="s1sn">Nope</div>
+      <div class="cardinfo" style="bottom:74px;">
+        <h2 class="cardname">Kevin, 31</h2>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/d2d20b56-bb89-43af-b273-e9402467d771" alt=""><span class="dtext">Management Consulting</span></div>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/a39d7439-a024-4831-a80c-d8f77b6f87fc" alt=""><span class="dtext">UCLA</span></div>
       </div>
+      <div class="cardactions">
+        <button class="likebtn" id="s1like"><img src="https://www.figma.com/api/mcp/asset/66202037-06e8-4344-af77-7027aaf81ed9" alt="Like"></button>
+        <button class="sswipenbt" id="s1ss"><img src="https://www.figma.com/api/mcp/asset/512e7c0e-5968-4d92-80d8-9e8d85c091a8" alt="SuperSwipe"></button>
+      </div>
+    </div>
+  </div>
+  <nav class="bottomnav">
+    <div class="navtabs">
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem" onclick="showScreen('s9')"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
 
-      <!-- Card 1 (top – active) -->
-      <div class="profile-card" id="top-card" style="z-index:3;">
-        <!-- avatar placeholder -->
-        <div class="photo-placeholder" style="background: linear-gradient(160deg,#43c6ac,#191654);">
-          <svg viewBox="0 0 100 100" width="160" opacity="0.25" fill="#fff">
-            <circle cx="50" cy="38" r="22"/>
-            <ellipse cx="50" cy="82" rx="34" ry="22"/>
-          </svg>
+<!-- ══════════════════════════════════════════════════
+     S2 · Feature Explanation
+     Tap anywhere on overlay → Micro Preferences (s3)
+══════════════════════════════════════════════════ -->
+<div class="screen" id="s2">
+  <div class="statusbar">
+    <span class="stime">9:41</span>
+    <div class="sicons">
+      <img class="icon-cell" src="https://www.figma.com/api/mcp/asset/d36add2d-8ce5-4f01-8849-48e5c6467ac3" alt="">
+      <img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/ccf5b615-df60-4157-92ca-88905f790821" alt="">
+      <img class="icon-bat"  src="https://www.figma.com/api/mcp/asset/5885da50-33cc-463c-b531-782cd39d2bcd" alt="">
+    </div>
+  </div>
+  <div class="appheader"><span class="wordmark">Bumble</span><button class="filterbtn"><img src="https://www.figma.com/api/mcp/asset/f14e4219-2114-4685-b451-cc85c99b4ec9" alt=""></button></div>
+  <div class="offerrow"><div class="offerbanner"><p class="offertext">Check out a deeper lifestyle analysis for $2.99</p></div><button class="offerbtn">Get offer</button></div>
+  <div class="cardarea">
+    <div class="card card-back-2" aria-hidden="true"></div>
+    <div class="card card-back-1" aria-hidden="true"></div>
+    <div class="card card-top" style="cursor:default;">
+      <img class="cardphoto" src="assets/Kevin.jpg" alt="Kevin">
+      <div class="cardscrim"></div>
+      <!-- Dark overlay with tooltip — tap to continue to questionnaire -->
+      <div class="feat-overlay" onclick="showScreen('s3')">
+        <div class="feat-tooltip">
+          <p>Uncover lifestyle match % by answering questions about your lifestyle preferences as you swipe</p>
         </div>
-        <div class="card-gradient"></div>
-        <div class="card-info">
-          <div class="name-age">Jordan, 26</div>
-          <div class="subtitle">Graphic designer · 3 miles away</div>
-          <!-- lifestyle badge -->
-          <div class="lifestyle-badge" id="badge-open-compat" onclick="showScreen('screen-compat')">
-            <span style="font-size:16px;">🌿</span>
-            <span class="pct">78%</span>
-            <span class="label">Lifestyle match</span>
-            <span class="chevron">›</span>
+        <div class="feat-arrows">
+          <img src="https://www.figma.com/api/mcp/asset/6a36d76d-c0ac-4c0b-8b93-70ffd34522b6" alt="">
+          <img src="https://www.figma.com/api/mcp/asset/4a50e014-5dff-4303-b083-3c342b5d672d" alt="">
+        </div>
+      </div>
+      <div class="cardinfo" style="z-index:5;">
+        <h2 class="cardname">Kevin, 31</h2>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/d2d20b56-bb89-43af-b273-e9402467d771" alt=""><span class="dtext">Management Consulting</span></div>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/a39d7439-a024-4831-a80c-d8f77b6f87fc" alt=""><span class="dtext">UCLA</span></div>
+      </div>
+      <div class="cardactions" style="z-index:5;">
+        <button class="likebtn" style="pointer-events:auto;" onclick="showScreen('s6')"><img style="width:58px;height:58px;" src="https://www.figma.com/api/mcp/asset/0eb300b6-0713-4fe4-a196-d3fd66c10142" alt="Like"></button>
+        <button class="sswipenbt" style="pointer-events:auto;" onclick="showScreen('s6')"><img style="width:87px;height:87px;" src="https://www.figma.com/api/mcp/asset/350feb83-bb1e-45d5-9ddf-7a77c457d153" alt="SuperSwipe"></button>
+      </div>
+    </div>
+  </div>
+  <nav class="bottomnav">
+    <div class="navtabs">
+      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     S3 · Micro Preferences — questionnaire
+     "Next" → Low Compatibility (s4)
+══════════════════════════════════════════════════ -->
+<div class="screen" id="s3">
+  <div class="statusbar"><span class="stime">9:41</span><div class="sicons"><img class="icon-cell" src="https://www.figma.com/api/mcp/asset/d36add2d-8ce5-4f01-8849-48e5c6467ac3" alt=""><img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/ccf5b615-df60-4157-92ca-88905f790821" alt=""><img class="icon-bat" src="https://www.figma.com/api/mcp/asset/5885da50-33cc-463c-b531-782cd39d2bcd" alt=""></div></div>
+  <div class="prefcard">
+    <div class="prefheader">
+      <div class="preflogo"><img src="https://www.figma.com/api/mcp/asset/e8171a54-533a-4232-a2f4-52272e1b7416" alt="Bumble"></div>
+      <div class="prefdots"><div class="prefdot on"></div><div class="prefdot on"></div><div class="prefdot on"></div><div class="prefdot"></div><div class="prefdot"></div></div>
+    </div>
+    <p class="prefq">Do you prefer a partner who often goes out to a bar or club at night (e.g., 3+ times a week?)</p>
+    <div class="prefopts">
+      <div class="prefopt" onclick="selectPref(this)"><div class="prefopt-num">1</div><span class="prefopt-text">Strongly Disagree</span></div>
+      <div class="prefopt" onclick="selectPref(this)"><div class="prefopt-num">2</div><span class="prefopt-text">Disagree</span></div>
+      <div class="prefopt sel" onclick="selectPref(this)"><div class="prefopt-num">3</div><span class="prefopt-text">Neither agree nor disagree</span></div>
+      <div class="prefopt" onclick="selectPref(this)"><div class="prefopt-num">4</div><span class="prefopt-text">Agree</span></div>
+      <div class="prefopt" onclick="selectPref(this)"><div class="prefopt-num">5</div><span class="prefopt-text">Strongly Agree</span></div>
+    </div>
+    <button class="prefnext" onclick="showScreen('s4')">Next →</button>
+  </div>
+  <nav class="bottomnav">
+    <div class="navtabs">
+      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     S4 · Low Compatibility — Kevin 0%
+     Like/swipe right → Match Confirmation (s6)
+     Swipe left → Swiped Left Landing (s5)
+     Upgrade CTA → Premium Gating (s7)
+══════════════════════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="statusbar"><span class="stime">9:41</span><div class="sicons"><img class="icon-cell" src="https://www.figma.com/api/mcp/asset/d36add2d-8ce5-4f01-8849-48e5c6467ac3" alt=""><img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/ccf5b615-df60-4157-92ca-88905f790821" alt=""><img class="icon-bat" src="https://www.figma.com/api/mcp/asset/5885da50-33cc-463c-b531-782cd39d2bcd" alt=""></div></div>
+  <div class="appheader"><span class="wordmark">Bumble</span><button class="filterbtn"><img src="https://www.figma.com/api/mcp/asset/f14e4219-2114-4685-b451-cc85c99b4ec9" alt=""></button></div>
+  <div class="offerrow"><div class="offerbanner"><p class="offertext">Check out a deeper lifestyle analysis for $2.99</p></div><button class="offerbtn">Get offer</button></div>
+  <div class="cardarea">
+    <div class="card card-back-2" aria-hidden="true"></div>
+    <div class="card card-back-1" aria-hidden="true"></div>
+    <div class="card card-top" id="s4card">
+      <img class="cardphoto" src="assets/Kevin.jpg" alt="Kevin">
+      <div class="cardscrim"></div>
+      <div class="swipestamp stamp-like" id="s4sl">Like</div>
+      <div class="swipestamp stamp-nope" id="s4sn">Nope</div>
+      <!-- Lifestyle Match pill — tap to upgrade -->
+      <div class="lmbadge" onclick="showScreen('s7')">
+        <div class="lmpill">
+          <div class="lmprow"><span class="lmlabel">Lifestyle Match</span><span class="lmpct">0%</span></div>
+          <div class="lmtrack"><div class="lmfill" style="width:2%"></div></div>
+          <div class="lmtags">
+            <span class="lmtag">Similar weekend pace</span>
+            <span class="lmtag">Aligned work hours</span>
+            <span class="lmtag">Comparable social energy</span>
           </div>
         </div>
       </div>
-
-    </div><!-- /card-area -->
-
-    <!-- Action buttons -->
-    <div class="action-bar">
-      <button class="action-btn btn-dislike" onclick="swipeCard('left')">✕</button>
-      <button class="action-btn btn-superlike">⭐</button>
-      <button class="action-btn btn-like" onclick="swipeCard('right')">♥</button>
-      <button class="action-btn btn-boost">⚡</button>
-    </div>
-
-    <!-- Bottom nav -->
-    <div class="bottom-nav">
-      <div class="nav-item active">
-        <svg viewBox="0 0 24 24"><path d="M12 2 2 9.5V20h7v-6h6v6h7V9.5z"/></svg>
-        <span>Discover</span>
+      <div class="cardinfo">
+        <h2 class="cardname">Kevin, 31</h2>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/d2d20b56-bb89-43af-b273-e9402467d771" alt=""><span class="dtext">Management Consulting</span></div>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/a39d7439-a024-4831-a80c-d8f77b6f87fc" alt=""><span class="dtext">UCLA</span></div>
       </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 12 4.09 5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54z"/></svg>
-        <span>Matches</span>
-      </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/></svg>
-        <span>Chat</span>
-      </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 8 1.34 8 4v2H4v-2c0-2.66 5.3-4 8-4zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
-        <span>Profile</span>
+      <div class="cardactions">
+        <button class="likebtn" id="s4like"><img src="https://www.figma.com/api/mcp/asset/07e398ad-57d0-4b3d-8608-f925b1df0007" alt="Like"></button>
+        <button class="sswipenbt" id="s4ss"><img src="https://www.figma.com/api/mcp/asset/f851c1d8-d7f6-44e4-8ce1-674fa2af1942" alt="SuperSwipe"></button>
       </div>
     </div>
+  </div>
+  <div class="upgcta" onclick="showScreen('s7')">
+    <span class="upgcta-text">Unlock full compatibility breakdown</span>
+    <span style="font-size:16px;font-weight:700;">→</span>
+  </div>
+  <nav class="bottomnav">
+    <div class="navtabs">
+      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
 
-  </div><!-- /screen-swipe -->
+<!-- ══════════════════════════════════════════════════
+     S5 · Swiped Left Landing — Thomas, 26
+     Like/swipe right → Match Confirmation (s6)
+     Swipe left → Exit to People/Will (s10)
+══════════════════════════════════════════════════ -->
+<div class="screen" id="s5">
+  <div class="statusbar"><span class="stime">9:41</span><div class="sicons"><img class="icon-cell" src="https://www.figma.com/api/mcp/asset/d36add2d-8ce5-4f01-8849-48e5c6467ac3" alt=""><img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/ccf5b615-df60-4157-92ca-88905f790821" alt=""><img class="icon-bat" src="https://www.figma.com/api/mcp/asset/5885da50-33cc-463c-b531-782cd39d2bcd" alt=""></div></div>
+  <div class="appheader"><span class="wordmark">Bumble</span><button class="filterbtn"><img src="https://www.figma.com/api/mcp/asset/f14e4219-2114-4685-b451-cc85c99b4ec9" alt=""></button></div>
+  <div class="offerrow"><div class="offerbanner"><p class="offertext">Check out a deeper lifestyle analysis for $2.99</p></div><button class="offerbtn">Get offer</button></div>
+  <div class="cardarea">
+    <div class="card card-back-2" aria-hidden="true"></div>
+    <div class="card card-back-1" aria-hidden="true"></div>
+    <div class="card card-top" id="s5card">
+      <img class="cardphoto" src="assets/Thomas.jpg" alt="Thomas">
+      <div class="cardscrim"></div>
+      <div class="swipestamp stamp-like" id="s5sl">Like</div>
+      <div class="swipestamp stamp-nope" id="s5sn">Nope</div>
+      <div class="lmbadge" style="bottom:130px;">
+        <div class="lmpill">
+          <div class="lmprow"><span class="lmlabel">Lifestyle Match</span><span class="lmpct">0%</span></div>
+          <div class="lmtrack"><div class="lmfill" style="width:2%"></div></div>
+          <div class="lmtags">
+            <span class="lmtag">Financial mindset aligned</span>
+            <span class="lmtag">Communication style aligned</span>
+            <span class="lmtag">Cleanliness standards aligned</span>
+          </div>
+        </div>
+      </div>
+      <div class="cardinfo" style="bottom:100px;">
+        <h2 class="cardname">Thomas, 26</h2>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/a8fa50b5-3754-4f24-b22f-b15101d55f05" alt=""><span class="dtext">Freelance Videographer</span></div>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/3b84a4bc-505f-418e-b791-6c3b8e2544a0" alt=""><span class="dtext">Cal State Long Beach</span></div>
+      </div>
+      <div class="cardactions">
+        <button class="likebtn" id="s5like"><img src="https://www.figma.com/api/mcp/asset/eb27289e-20de-41ef-ba1f-3496a7960cea" alt="Like"></button>
+        <button class="sswipenbt" id="s5ss"><img src="https://www.figma.com/api/mcp/asset/2cd06c76-abbe-4ae9-95f8-16ca82d39300" alt="SuperSwipe"></button>
+      </div>
+    </div>
+  </div>
+  <div class="upgcta" onclick="showScreen('s7')">
+    <span class="upgcta-text">Unlock full compatibility breakdown</span>
+    <span style="font-size:16px;font-weight:700;">→</span>
+  </div>
+  <nav class="bottomnav">
+    <div class="navtabs">
+      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
 
+<!-- ══════════════════════════════════════════════════
+     S6 · Match Confirmation — It's a Match!
+     "See Full Breakdown" → Matched Compatibility (s12)
+     "Message Now" → Chat Screen (s8)
+     Back → s1
+══════════════════════════════════════════════════ -->
+<div class="screen" id="s6" style="background:#fbdc60;">
+  <div class="statusbar" style="background:#fbdc60;"><span class="stime">9:41</span><div class="sicons"><img class="icon-cell" src="https://www.figma.com/api/mcp/asset/d36add2d-8ce5-4f01-8849-48e5c6467ac3" alt=""><img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/ccf5b615-df60-4157-92ca-88905f790821" alt=""><img class="icon-bat" src="https://www.figma.com/api/mcp/asset/5885da50-33cc-463c-b531-782cd39d2bcd" alt=""></div></div>
+  <div class="matchbg">
+    <button class="match-back" onclick="showScreen('s1')">‹</button>
+    <div class="matchphotos">
+      <img class="mphotol" src="assets/Tina.jpg" alt="Tina">
+      <img class="mphoto-r" src="assets/Thomas.jpg" alt="Thomas">
+    </div>
+    <p class="matchtitle">It's a Match! You now have 24 hours to message Thomas.</p>
+    <div class="match-lmpill">
+      <div class="match-lmprow">
+        <span class="match-lmlabel">Lifestyle Match</span>
+        <span class="match-lmpct">86%</span>
+      </div>
+      <div class="lmtrack"><div class="lmfill" style="width:86%"></div></div>
+      <div class="lmtags" style="margin-top:4px;">
+        <span class="lmtag">Financial mindset aligned</span>
+        <span class="lmtag">Communication style aligned</span>
+        <span class="lmtag">Cleanliness standards aligned</span>
+      </div>
+    </div>
+    <div class="matchbtns">
+      <button class="matchbtn-primary" onclick="showScreen('s8')">Message Now</button>
+      <button class="matchbtn-grad" onclick="showScreen('s12')">See Full Breakdown →</button>
+    </div>
+  </div>
+  <nav class="bottomnav" style="background:rgba(251,220,96,0.9);">
+    <div class="navtabs">
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem" onclick="showScreen('s9')"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
 
-  <!-- ══════════════════════════════════════════
-       SCREEN 2 – Lifestyle compatibility detail
-  ══════════════════════════════════════════ -->
-  <div class="screen hidden" id="screen-compat">
+<!-- ══════════════════════════════════════════════════
+     S7 · Premium Gating (free user upsell)
+     "Go Premium" → Matched Compatibility (s12)
+     "Maybe Later" → goBack()
+══════════════════════════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="statusbar"><span class="stime">9:41</span><div class="sicons"><img class="icon-cell" src="https://www.figma.com/api/mcp/asset/2fab9a4c-f5ce-4898-aeff-9feafe2b45a8" alt=""><img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/9c7f2ee1-0ee6-4d8c-a1fd-f98146aefc04" alt=""><img class="icon-bat" src="https://www.figma.com/api/mcp/asset/97b58a23-c88b-43df-a993-59c3437053c0" alt=""></div></div>
+  <div class="appheader"><span class="wordmark">Bumble</span><button class="filterbtn"><img src="https://www.figma.com/api/mcp/asset/1457655f-759b-4f7a-8200-a333053bef1b" alt=""></button></div>
+  <div class="prempopup">
+    <button class="prem-backbtn" onclick="goBack()"><img src="https://www.figma.com/api/mcp/asset/d798fe8d-8098-434e-b219-5404e2f62ce8" alt="Back"></button>
+    <p class="prem-subtitle">Compatibility Preview</p>
+    <div class="prem-pills">
+      <div class="prempill" style="top:0;left:8px;transform:rotate(-6.87deg);">You already know you're 92% compatible</div>
+      <div class="prempill" style="top:62px;left:160px;transform:rotate(2.65deg);">You saw the tags</div>
+      <div class="prempill" style="top:110px;left:4px;transform:rotate(-5.07deg);">But do you know why your routines actually fit?</div>
+      <div class="prempill" style="top:155px;left:100px;transform:rotate(4.35deg);">Or where they don't and where it matters?</div>
+    </div>
+    <p class="prem-body">Get the full picture and unlock advanced compatibility about your match.</p>
+    <button class="prembtn-primary" onclick="showScreen('s12')">Go Premium →</button>
+    <button class="prembtn-secondary" onclick="goBack()">Maybe Later</button>
+  </div>
+  <nav class="bottomnav">
+    <div class="navtabs">
+      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/23edda5f-97cc-4d2d-ba78-b0f9ca0c6b70" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8dc7251d-8761-4bfa-99a9-f8e7992621b5" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/886808ad-75d0-4d0d-b3a6-0f47721d7872" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/71cf43d0-bc6f-4039-80ab-2156ea0d09ba" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/a5cdf0ce-6ad0-40d2-a87f-f7f6d187f651" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
 
-    <!-- Hero -->
-    <div class="compat-hero">
-      <button class="back-btn" onclick="goBack('screen-compat','screen-swipe')">← Jordan's profile</button>
-      <div class="hero-names">You &amp; Jordan</div>
-      <div class="big-pct">78<span>%</span></div>
-      <div class="hero-sub">Lifestyle compatibility · based on 6 areas</div>
+<!-- ══════════════════════════════════════════════════
+     S8 · Chat Screen — Thomas, 26
+     Back → Chat List (s9)
+     Thomas name/avatar → Matched Profile (s11)
+══════════════════════════════════════════════════ -->
+<div class="screen" id="s8">
+  <div class="statusbar"><span class="stime">9:41</span><div class="sicons"><img class="icon-cell" src="https://www.figma.com/api/mcp/asset/82fa39c5-5106-46ff-aa26-ea960f20319b" alt=""><img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/6e8a72a5-beaf-4eed-8d9f-ffc831f88426" alt=""><img class="icon-bat" src="https://www.figma.com/api/mcp/asset/942b455c-1d83-44ba-bc94-a17a39b58f66" alt=""></div></div>
+  <div class="backheader">
+    <button class="backbtn" onclick="showScreen('s9')"><img src="https://www.figma.com/api/mcp/asset/bb659eda-b189-4592-aabd-99df03c3a292" alt="Back"></button>
+    <span class="backheader-title">Bumble</span>
+    <button class="backheader-right"><img src="https://www.figma.com/api/mcp/asset/2653c39e-3f16-4d1e-9014-283565052c61" alt="More"></button>
+  </div>
+  <div class="chatcontent">
+    <img class="chat-avatar" src="assets/Thomas.jpg" alt="Thomas" onclick="showScreen('s11')">
+    <p class="chatname" onclick="showScreen('s11')">Thomas, 26</p>
+    <p class="chattimer">23 hours left to message</p>
+  </div>
+  <div class="sendbottom">
+    <div class="sendbottom-icon"><img src="https://www.figma.com/api/mcp/asset/7fce76b9-ffd4-4bfd-b156-f836776f2d0f" alt="Camera"></div>
+    <input class="sendbottom-input" type="text" placeholder="Send Message">
+    <div class="sendbottom-icon"><img src="https://www.figma.com/api/mcp/asset/ff5e24c8-0bde-4360-a33b-9efd0055207e" alt="Video"></div>
+    <div class="sendbottom-icon"><img src="https://www.figma.com/api/mcp/asset/324c9721-38a9-4755-87a8-c987f9085799" alt="Mic"></div>
+  </div>
+  <nav class="bottomnav">
+    <div class="navtabs">
+      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/1ad69795-971d-4ca6-ac9f-57939a8763f3" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/ae48f543-dfff-4dba-a11a-6943e077869a" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem" onclick="showScreen('s1')"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/88d247df-dc1f-46ff-8e65-0742ef28c7f6" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/9b41100d-b20f-45c6-af9b-55cd93b9f7f0" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem active"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/719df30c-1336-49e3-a3b9-5c9c89b57cc4" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     S9 · Chat List
+     Thomas row → Chat Screen (s8)
+     People tab → s1
+══════════════════════════════════════════════════ -->
+<div class="screen" id="s9">
+  <div class="statusbar"><span class="stime">9:41</span><div class="sicons"><img class="icon-cell" src="https://www.figma.com/api/mcp/asset/dffbf691-61d8-4df4-8f69-4202bbd08faf" alt=""><img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/05dbb805-0fc0-46d7-b0d9-0c3177599674" alt=""><img class="icon-bat" src="https://www.figma.com/api/mcp/asset/1f219a25-62bb-46c6-9947-7bcbb8facaee" alt=""></div></div>
+  <div class="chatlist-inner">
+    <div class="chats-title-row">
+      <span class="chats-title">Chats</span>
+      <div class="chats-search"><img src="https://www.figma.com/api/mcp/asset/8b4d981f-ba00-4f49-8b74-a3205b416f54" alt="Search"></div>
+    </div>
+    <div class="chatssec-label">Your matches (1)</div>
+    <div class="matches-row">
+      <div class="match-thumb-wrap">
+        <img class="match-thumb" src="https://www.figma.com/api/mcp/asset/609d0462-ff44-4b53-8f5c-0fe062014cdb" alt="">
+        <span class="match-badge">50+</span>
+      </div>
+      <div class="match-thumb-wrap">
+        <img class="match-thumb" src="https://www.figma.com/api/mcp/asset/609d0462-ff44-4b53-8f5c-0fe062014cdb" alt="">
+      </div>
+    </div>
+    <div class="chatssec-label">Chats <span style="color:#505050;">(Recent)</span></div>
+    <div class="chatrow" onclick="showScreen('s8')">
+      <div class="chatrow-avwrap">
+        <img class="chatrow-avatar" src="assets/Thomas.jpg" alt="Thomas">
+        <span class="chatrow-compat">98%</span>
+      </div>
+      <div class="chatrow-body">
+        <div class="chatrow-top">
+          <span class="chatrow-name">Thomas</span>
+          <span class="chatrow-pill">Your move</span>
+        </div>
+        <div class="chatrow-preview">Let's go to a pottery class sometime!</div>
+        <div class="chatrow-expiry">Conversation expires in <strong>1 min</strong></div>
+      </div>
+    </div>
+  </div>
+  <nav class="bottomnav">
+    <div class="navtabs">
+      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/13958c3c-668f-465d-bc9d-35d29639f8c2" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/21d84897-77e1-46bd-8188-5b9453404a49" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem" onclick="showScreen('s1')"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/e6a4828e-7120-4be1-89a2-9a2e5ff59e8f" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/5769117f-50c9-4c96-b5ce-9aede44e09f5" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem active"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/34b6cade-363e-47bf-be8f-589062c016fe" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     S10 · Exit to People — Will, 30
+     Like/swipe right → Match Confirmation (s6)
+     Swipe left → back to Original State (s1)
+══════════════════════════════════════════════════ -->
+<div class="screen" id="s10">
+  <div class="statusbar"><span class="stime">9:41</span><div class="sicons"><img class="icon-cell" src="https://www.figma.com/api/mcp/asset/6919b3b5-df5b-4be3-b800-2af7032a2ab9" alt=""><img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/8889c150-e56c-4da3-a694-78012180a29f" alt=""><img class="icon-bat" src="https://www.figma.com/api/mcp/asset/deb3a869-3846-4080-ab30-6a28ec504236" alt=""></div></div>
+  <div class="appheader"><span class="wordmark">Bumble</span><button class="filterbtn"><img src="https://www.figma.com/api/mcp/asset/94df6bd1-a693-4bd9-9e92-497bb1427e7f" alt=""></button></div>
+  <div class="offerrow"><div class="offerbanner"><p class="offertext">Check out a deeper lifestyle analysis for $2.99</p></div><button class="offerbtn">Get offer</button></div>
+  <div class="cardarea">
+    <div class="card card-back-2" aria-hidden="true"></div>
+    <div class="card card-back-1" aria-hidden="true"></div>
+    <div class="card card-top" id="s10card">
+      <img class="cardphoto" src="assets/Will.jpg" alt="Will">
+      <div class="uploadbtn">
+        <img class="uc" src="https://www.figma.com/api/mcp/asset/046cd873-c25d-4992-83b2-ce35bbf4942b" alt="">
+        <img class="ui" src="https://www.figma.com/api/mcp/asset/64cd80a5-8c95-4987-922a-2121a5eecb00" alt="">
+      </div>
+      <div class="cardscrim"></div>
+      <div class="swipestamp stamp-like" id="s10sl">Like</div>
+      <div class="swipestamp stamp-nope" id="s10sn">Nope</div>
+      <div class="lmbadge">
+        <div class="lmpill">
+          <div class="lmprow"><span class="lmlabel">Lifestyle Match</span><span class="lmpct">0%</span></div>
+          <div class="lmtrack"><div class="lmfill" style="width:2%"></div></div>
+          <div class="lmtags">
+            <span class="lmtag">Financial mindset aligned</span>
+            <span class="lmtag">Communication style aligned</span>
+            <span class="lmtag">Cleanliness standards aligned</span>
+          </div>
+        </div>
+      </div>
+      <div class="cardinfo">
+        <h2 class="cardname">Will, 30</h2>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/44477e1b-39f8-4073-9310-02f6c26877bc" alt=""><span class="dtext">Professional Chef</span></div>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/ac6d3d01-977b-46b6-95f8-14c8b947ef06" alt=""><span class="dtext">Le Cordon Bleu</span></div>
+      </div>
+      <div class="cardactions">
+        <button class="likebtn" id="s10like"><img src="https://www.figma.com/api/mcp/asset/4e252c36-cfd1-4d1d-8023-a8362d3467a3" alt="Like"></button>
+        <button class="sswipenbt" id="s10ss"><img src="https://www.figma.com/api/mcp/asset/4b759ad8-9178-4357-ad74-0c61ec81c7f2" alt="SuperSwipe"></button>
+      </div>
+    </div>
+  </div>
+  <nav class="bottomnav">
+    <div class="navtabs">
+      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b85f0af0-7a7e-46fe-a91f-114a06ada681" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/4041ec14-648d-459f-bfb9-c9307505dab2" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/37a38c7a-afcc-465d-89ef-a2ad706deec2" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/05cd524d-b06a-4cab-8689-9b4325d3ff14" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/c1de123c-b967-457f-8bc8-d3a34cf09e6c" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     S11 · Matched Profile — Thomas, 26
+     "See Compatibility Breakdown" → s12
+     Back → Chat List (s9)
+══════════════════════════════════════════════════ -->
+<div class="screen" id="s11">
+  <div class="statusbar"><span class="stime">9:41</span><div class="sicons"><img class="icon-cell" src="https://www.figma.com/api/mcp/asset/385d6649-71bc-4616-b1f7-da79cd807907" alt=""><img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/c0c90e52-1ee7-490b-913c-666e0d5d7ef1" alt=""><img class="icon-bat" src="https://www.figma.com/api/mcp/asset/65dd8f17-4eb0-434b-8f09-e82a569966b5" alt=""></div></div>
+  <div class="matched-topinfo">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <h2 class="matched-name">Thomas, 26</h2>
+      <button class="backbtn" style="color:#777f89;" onclick="showScreen('s9')"><img src="https://www.figma.com/api/mcp/asset/9d8c9436-96b6-43b8-955d-6b389dc67783" alt="Back" style="transform:scaleX(-1);"></button>
+    </div>
+    <div class="matched-detail"><img class="matched-detail-icon" src="https://www.figma.com/api/mcp/asset/5f3bdb13-8c78-4366-9546-b2729f954bd0" alt=""><span class="matched-detail-text">Freelance Videographer</span></div>
+    <div class="matched-detail"><img class="matched-detail-icon" src="https://www.figma.com/api/mcp/asset/b2a831af-ace1-4ea0-8e0c-61411f6fe19e" alt=""><span class="matched-detail-text">Cal State Long Beach</span></div>
+  </div>
+  <div class="matched-card-area">
+    <div class="matched-card">
+      <img class="matched-card-photo" src="assets/Thomas.jpg" alt="Thomas">
+      <div class="uploadbtn"><img class="uc" src="https://www.figma.com/api/mcp/asset/de8fc046-a141-4cef-9219-ef88268b8ad5" alt=""><img class="ui" src="https://www.figma.com/api/mcp/asset/d2c0ed0a-4519-40e0-9f6f-b6e4bad08b4e" alt=""></div>
+      <div class="matched-card-scrim"></div>
+      <div class="matched-lmpill">
+        <div class="lmprow"><span class="lmlabel">Lifestyle Match</span><span class="lmpct">0%</span></div>
+        <div class="lmtrack"><div class="lmfill" style="width:2%"></div></div>
+        <div class="lmtags">
+          <span class="lmtag">Financial mindset aligned</span>
+          <span class="lmtag">Communication style aligned</span>
+          <span class="lmtag">Cleanliness standards aligned</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="matched-ctabtn" onclick="showScreen('s12')">See Compatibility Breakdown →</button>
+  <nav class="bottomnav">
+    <div class="navtabs">
+      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/c56e41d7-61eb-42f8-9af5-d1a51aa061f8" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/30a6ee28-7bfa-4e84-9aeb-864f71e1d16f" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem" onclick="showScreen('s1')"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/8b59575e-bc18-4af1-96fa-1b410b3c3c59" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e02e2c6a-7ecb-44fe-81a9-d4436439369f" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem active"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/147555f1-b823-4eaf-8abf-50278a7b81ca" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     S12 · Matched Compatibility — Tina x Thomas
+     Scrollable content  ·  Back → Matched Profile (s11)
+══════════════════════════════════════════════════ -->
+<div class="screen" id="s12">
+  <div class="compat-statusbar">
+    <span class="stime">9:41</span>
+    <div class="sicons"><img class="icon-cell" src="https://www.figma.com/api/mcp/asset/91281c94-8e4d-45a5-a8e9-4cfdc0218bac" alt=""><img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/a0bf2e34-b76a-45ff-ba32-39a843fcda45" alt=""><img class="icon-bat" src="https://www.figma.com/api/mcp/asset/a1144f30-be70-4c26-a693-49f6a89d6e57" alt=""></div>
+  </div>
+  <div class="compat-scroll">
+    <div class="compat-topblock">
+      <button class="compat-backbtn" onclick="showScreen('s11')"><img src="https://www.figma.com/api/mcp/asset/d71e8f6e-1b60-4516-b49f-217a5e04511d" alt="Back"></button>
+      <div class="compat-photos">
+        <img class="compat-photol" src="assets/Tina.jpg" alt="Tina">
+        <img class="compat-photor" src="assets/Thomas.jpg" alt="Thomas">
+      </div>
+      <h2 class="compat-heading">Tina x Thomas at a glance</h2>
+      <div class="compat-lmpill">
+        <div class="lmprow"><span class="lmlabel">Lifestyle Match</span><span class="lmpct">86%</span></div>
+        <div class="lmtrack"><div class="lmfill" style="width:86%"></div></div>
+      </div>
     </div>
 
-    <!-- Donut ring -->
-    <div class="ring-wrap">
-      <svg width="160" height="160" viewBox="0 0 160 160">
-        <circle cx="80" cy="80" r="64" fill="#fff" stroke="#f0f0f0" stroke-width="18"/>
-        <!-- full track -->
-        <circle cx="80" cy="80" r="64" fill="none" stroke="#f0f0f0" stroke-width="18"/>
-        <!-- fill (78% of circumference = 2πr * 0.78 = 313.7) -->
-        <circle cx="80" cy="80" r="64" fill="none"
-          stroke="#FCC423" stroke-width="18"
-          stroke-dasharray="313.7 402.1"
-          stroke-dashoffset="100.5"
-          stroke-linecap="round"
-          transform="rotate(-90 80 80)"/>
-        <text x="80" y="76" text-anchor="middle" font-size="28" font-weight="900" fill="#1a1a1a">78%</text>
-        <text x="80" y="96" text-anchor="middle" font-size="11" fill="#888">match</text>
-      </svg>
+    <!-- Hexagon Radar Chart -->
+    <div class="compat-chart-wrap">
+      <div style="text-align:center;margin-bottom:8px;font-size:14px;font-weight:600;color:#505050;">Compatibility Radar</div>
+      <div class="compat-chart">
+        <div class="compat-chart-imgs" style="height:220px;">
+          <!-- Outer hexagon grid rings using Figma polygon assets -->
+          <img style="position:absolute;left:50%;top:50%;width:270px;height:224px;transform:translate(-50%,-50%) rotate(-90deg);opacity:0.25;" src="https://www.figma.com/api/mcp/asset/8979107d-fda9-4f45-913e-6017711a3f66" alt="">
+          <img style="position:absolute;left:50%;top:50%;width:200px;height:166px;transform:translate(-50%,-50%) rotate(-90deg);opacity:0.3;" src="https://www.figma.com/api/mcp/asset/9dbb86f1-cd95-4e5f-bed4-181ca699343a" alt="">
+          <img style="position:absolute;left:50%;top:50%;width:136px;height:113px;transform:translate(-50%,-50%) rotate(-90deg);opacity:0.35;" src="https://www.figma.com/api/mcp/asset/979f3f10-2343-4954-97dc-4fec374e5979" alt="">
+          <img style="position:absolute;left:50%;top:50%;width:80px;height:66px;transform:translate(-50%,-50%) rotate(-90deg);opacity:0.4;" src="https://www.figma.com/api/mcp/asset/d2656f6d-b4ae-4268-a61c-eb87e2d3bd32" alt="">
+          <!-- Filled data polygon -->
+          <img style="position:absolute;left:50%;top:50%;width:240px;height:199px;transform:translate(-50%,-50%) rotate(-90deg);opacity:0.7;" src="https://www.figma.com/api/mcp/asset/60a55a5c-7d49-4480-86e9-19b2b951858a" alt="">
+        </div>
+        <div class="compat-chart-labels">
+          <div class="compat-chart-label">Long-term Goals<span>81%</span></div>
+          <div class="compat-chart-label">Family Planning<span>83%</span></div>
+          <div class="compat-chart-label">Growth Mindset<span>90%</span></div>
+          <div class="compat-chart-label">Communication<span>91%</span></div>
+          <div class="compat-chart-label">Financial Habits<span>87%</span></div>
+          <div class="compat-chart-label">Conflict Mgmt<span>80%</span></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Category list -->
-    <div class="section-title">Compatibility breakdown</div>
-    <div class="category-list" id="category-list">
-
-      <div class="cat-card" onclick="showCategory('sleep')">
-        <div class="cat-icon" style="background:#eef6ff;">🌙</div>
-        <div class="cat-body">
-          <div class="cat-name">Sleep schedule</div>
-          <div class="cat-desc">Both night owls · 11 pm–7 am</div>
-        </div>
-        <div class="cat-pct-wrap">
-          <div class="cat-pct" style="color:#27ae60;">92%</div>
-          <div class="bar-track"><div class="bar-fill" style="width:92%;background:#27ae60;"></div></div>
+    <!-- Score Cards -->
+    <div class="score-cards">
+      <div class="scorecard">
+        <div class="scorecard-cat">Financial Habits</div>
+        <div class="scorecard-bullets">
+          <div class="scorecard-bullet">Long-term financial outlook are aligned</div>
+          <div class="scorecard-bullet">Both actively practice the 50/30/20 rule</div>
+          <div class="scorecard-bullet">Each has 6–12 month financial cushion for emergencies</div>
         </div>
       </div>
-
-      <div class="cat-card" onclick="showCategory('diet')">
-        <div class="cat-icon" style="background:#fff0e0;">🥗</div>
-        <div class="cat-body">
-          <div class="cat-name">Diet &amp; food</div>
-          <div class="cat-desc">Flexitarian vs. vegetarian</div>
-        </div>
-        <div class="cat-pct-wrap">
-          <div class="cat-pct" style="color:#27ae60;">85%</div>
-          <div class="bar-track"><div class="bar-fill" style="width:85%;background:#27ae60;"></div></div>
+      <div class="scorecard">
+        <div class="scorecard-cat">Communication Style</div>
+        <div class="scorecard-bullets">
+          <div class="scorecard-bullet">You both prefer open communication</div>
+          <div class="scorecard-bullet">Both agree no one goes to bed angry</div>
+          <div class="scorecard-bullet">Both prefer weekly check-ins and monthly audits</div>
         </div>
       </div>
-
-      <div class="cat-card" onclick="showCategory('activity')">
-        <div class="cat-icon" style="background:#fff0f8;">🏃</div>
-        <div class="cat-body">
-          <div class="cat-name">Activity level</div>
-          <div class="cat-desc">You: active daily · Jordan: 3×/week</div>
-        </div>
-        <div class="cat-pct-wrap">
-          <div class="cat-pct" style="color:#e67e22;">70%</div>
-          <div class="bar-track"><div class="bar-fill" style="width:70%;background:#e67e22;"></div></div>
+      <div class="scorecard">
+        <div class="scorecard-cat">Long-term Goals</div>
+        <div class="scorecard-bullets">
+          <div class="scorecard-bullet">Both prioritize career growth before settling down</div>
+          <div class="scorecard-bullet">Both want to own property within the next 5 years</div>
+          <div class="scorecard-bullet">Slight difference in timeline for major life milestones</div>
         </div>
       </div>
-
-      <div class="cat-card" onclick="showCategory('social')">
-        <div class="cat-icon" style="background:#f0fff4;">🎉</div>
-        <div class="cat-body">
-          <div class="cat-name">Social energy</div>
-          <div class="cat-desc">Both ambivert leaning social</div>
-        </div>
-        <div class="cat-pct-wrap">
-          <div class="cat-pct" style="color:#27ae60;">88%</div>
-          <div class="bar-track"><div class="bar-fill" style="width:88%;background:#27ae60;"></div></div>
+      <div class="scorecard">
+        <div class="scorecard-cat">Family Planning</div>
+        <div class="scorecard-bullets">
+          <div class="scorecard-bullet">Both open to kids but not before 35</div>
+          <div class="scorecard-bullet">Both want a small family of one to two children</div>
+          <div class="scorecard-bullet">Minor gap on pet preferences: you like dogs, she likes cats</div>
         </div>
       </div>
-
-      <div class="cat-card" onclick="showCategory('spending')">
-        <div class="cat-icon" style="background:#f5f0ff;">💰</div>
-        <div class="cat-body">
-          <div class="cat-name">Spending habits</div>
-          <div class="cat-desc">You: saver · Jordan: spender</div>
-        </div>
-        <div class="cat-pct-wrap">
-          <div class="cat-pct" style="color:#e74c3c;">52%</div>
-          <div class="bar-track"><div class="bar-fill" style="width:52%;background:#e74c3c;"></div></div>
+      <div class="scorecard">
+        <div class="scorecard-cat">Growth Mindset</div>
+        <div class="scorecard-bullets">
+          <div class="scorecard-bullet">Both actively invest in personal development activities</div>
+          <div class="scorecard-bullet">Aligned on trying something new at least once a month</div>
+          <div class="scorecard-bullet">Both have changed careers and are open to reinvention</div>
         </div>
       </div>
-
-      <div class="cat-card" onclick="showCategory('cleanliness')">
-        <div class="cat-icon" style="background:#effffd;">🧹</div>
-        <div class="cat-body">
-          <div class="cat-name">Home &amp; cleanliness</div>
-          <div class="cat-desc">Both tidiness-focused</div>
-        </div>
-        <div class="cat-pct-wrap">
-          <div class="cat-pct" style="color:#27ae60;">80%</div>
-          <div class="bar-track"><div class="bar-fill" style="width:80%;background:#27ae60;"></div></div>
+      <div class="scorecard">
+        <div class="scorecard-cat">Conflict Management</div>
+        <div class="scorecard-bullets">
+          <div class="scorecard-bullet">Both prefer to talk it out over silent treatment</div>
+          <div class="scorecard-bullet">Aligned on cooling off before discussing if heated</div>
+          <div class="scorecard-bullet">Difference in resolution speed — you prefer overnight, she prefers same-day</div>
         </div>
       </div>
-
-    </div><!-- /category-list -->
-
-    <div class="scroll-pad"></div>
-
-  </div><!-- /screen-compat -->
-
-
-  <!-- ══════════════════════════════════════════
-       SCREEN 3 – Category drill-down (dynamic)
-  ══════════════════════════════════════════ -->
-  <div class="screen hidden" id="screen-category">
-
-    <div class="cat-hero" id="cat-hero-content"></div>
-    <div class="trait-list" id="cat-trait-list"></div>
-    <div class="tip-box" id="cat-tip"></div>
-    <div class="scroll-pad"></div>
-
-  </div><!-- /screen-category -->
+    </div>
+  </div>
+  <nav class="bottomnav">
+    <div class="navtabs">
+      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e104c5a5-1175-4772-9f67-66024c883fe3" alt=""></div><span class="navlabel">Profile</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/95d37a13-a97c-4fa6-a42a-7b878e5fc0e4" alt=""></div><span class="navlabel">Discover</span></button>
+      <button class="navitem" onclick="showScreen('s1')"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/410be369-c1da-410b-be19-5dd8775683ec" alt=""></div><span class="navlabel">People</span></button>
+      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/06fb21c2-345e-495e-a94c-fe49d850d7c7" alt=""></div><span class="navlabel">Liked You</span></button>
+      <button class="navitem active"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/7529cfc8-97e5-4a51-a01d-79d98035a0d8" alt=""></div><span class="navlabel">Chats</span></button>
+    </div>
+    <div class="homeindicator"><div class="homeindbar"></div></div>
+  </nav>
+</div>
 
 </div><!-- /phone -->
 
 <script>
-/* ─────────────────────────────────────────
-   Navigation helpers
-───────────────────────────────────────── */
-let history = [];
+/* ═══════════════════════════════════════════════════════
+   Navigation system
+═══════════════════════════════════════════════════════ */
+var navHistory = ['s1'];
 
 function showScreen(id) {
-  const current = history[history.length - 1] || 'screen-swipe';
-  const prev = document.getElementById(current);
-  const next = document.getElementById(id);
-  prev.classList.add('exit');
-  next.classList.remove('hidden');
-  next.scrollTop = 0;
-  history.push(id);
-  setTimeout(() => { prev.classList.add('hidden'); prev.classList.remove('exit'); }, 350);
-}
-
-function goBack(fromId, toId) {
-  const from = document.getElementById(fromId);
-  const to   = document.getElementById(toId);
-  from.style.transition = 'transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s';
-  from.style.transform = 'translateX(100%)';
-  from.style.opacity   = '0';
-  to.classList.remove('hidden', 'exit');
-  to.style.transform = '';
-  to.style.opacity   = '';
-  setTimeout(() => {
-    from.classList.add('hidden');
-    from.style.transform = '';
-    from.style.opacity   = '';
-    from.style.transition = '';
-  }, 320);
-  history.pop();
-}
-
-/* ─────────────────────────────────────────
-   Category data
-───────────────────────────────────────── */
-const categories = {
-  sleep: {
-    icon: '🌙', bg: '#eef6ff', name: 'Sleep schedule', pct: 92, color: '#27ae60',
-    sub: 'You both prefer a similar rhythm',
-    traits: [
-      { emoji:'🛏️', name:'Bedtime',      you:'11 pm',     them:'11:30 pm', match: true },
-      { emoji:'⏰', name:'Wake-up',       you:'7 am',      them:'7 am',     match: true },
-      { emoji:'😴', name:'Nap habits',    you:'Rarely',    them:'Weekends', match: true },
-      { emoji:'📵', name:'Phone in bed',  you:'Sometimes', them:'Always',   match: false },
-    ],
-    tip: '💡 <strong>Great news!</strong> Shared sleep schedules reduce one of the most common sources of couple friction. Your morning energy levels align well.'
-  },
-  diet: {
-    icon: '🥗', bg: '#fff0e0', name: 'Diet & food', pct: 85, color: '#27ae60',
-    sub: 'Mostly compatible with minor differences',
-    traits: [
-      { emoji:'🌱', name:'Diet type',    you:'Flexitarian', them:'Vegetarian', match: true },
-      { emoji:'🍳', name:'Cooking freq', you:'5× / week',   them:'4× / week',  match: true },
-      { emoji:'🌶️', name:'Spice level',  you:'Medium',      them:'Very spicy', match: false },
-      { emoji:'🍷', name:'Alcohol',      you:'Occasionally', them:'Rarely',    match: true },
-    ],
-    tip: '💡 <strong>Mostly compatible!</strong> You can easily share meals. Jordan's vegetarian preference means plenty of overlap with your flexitarian diet.'
-  },
-  activity: {
-    icon: '🏃', bg: '#fff0f8', name: 'Activity level', pct: 70, color: '#e67e22',
-    sub: 'Some differences, but manageable',
-    traits: [
-      { emoji:'🏋️', name:'Gym',         you:'Daily',        them:'3× / week', match: false },
-      { emoji:'🚶', name:'Walking',      you:'Daily',        them:'Daily',     match: true  },
-      { emoji:'🧘', name:'Mindfulness',  you:'Never',        them:'Weekly',    match: false },
-      { emoji:'🤸', name:'Outdoor sport',you:'Weekends',     them:'Weekends',  match: true  },
-    ],
-    tip: '💡 <strong>Moderate match.</strong> You're more active than Jordan day-to-day, but you share outdoor weekend interests. Great for adventure dates!'
-  },
-  social: {
-    icon: '🎉', bg: '#f0fff4', name: 'Social energy', pct: 88, color: '#27ae60',
-    sub: 'You both enjoy people, with balance',
-    traits: [
-      { emoji:'🧠', name:'Introvert/Extrovert', you:'Ambivert',    them:'Ambivert',   match: true },
-      { emoji:'🥂', name:'Going out freq',      you:'2× / month',  them:'2× / month', match: true },
-      { emoji:'🏠', name:'Hosting',             you:'Love it',     them:'Love it',    match: true },
-      { emoji:'📞', name:'Calling vs texting',  you:'Text',        them:'Call',       match: false },
-    ],
-    tip: '💡 <strong>Strong social fit!</strong> You're both ambiverts who enjoy hosting and going out at a similar pace. Lots of shared social activities ahead.'
-  },
-  spending: {
-    icon: '💰', bg: '#f5f0ff', name: 'Spending habits', pct: 52, color: '#e74c3c',
-    sub: 'Noticeable differences – worth discussing',
-    traits: [
-      { emoji:'💸', name:'Money style',   you:'Saver',     them:'Spender',   match: false },
-      { emoji:'🍽️', name:'Eating out',   you:'Rarely',    them:'Often',     match: false },
-      { emoji:'✈️', name:'Travel budget', you:'Budget',    them:'Mid-range', match: false },
-      { emoji:'🛍️', name:'Impulse buys', you:'Rarely',    them:'Sometimes', match: true  },
-    ],
-    tip: '💡 <strong>Worth a conversation.</strong> Financial compatibility matters long-term. Many couples navigate different styles successfully with open communication and shared budgets.'
-  },
-  cleanliness: {
-    icon: '🧹', bg: '#effffd', name: 'Home & cleanliness', pct: 80, color: '#27ae60',
-    sub: 'Aligned on keeping a tidy space',
-    traits: [
-      { emoji:'🫧', name:'Tidiness',    you:'High',      them:'High',     match: true  },
-      { emoji:'🧽', name:'Cleaning',    you:'Weekly',    them:'Bi-weekly',match: false },
-      { emoji:'🌿', name:'Plants/decor',you:'Loves it',  them:'Loves it', match: true  },
-      { emoji:'🐾', name:'Pets',        you:'Dog owner', them:'Cat lover',match: true  },
-    ],
-    tip: '💡 <strong>Solid match!</strong> Shared tidiness standards prevent a huge source of roommate-style friction. You both care about a clean, welcoming home.'
+  var cur = document.querySelector('.screen.active');
+  if (cur) cur.classList.remove('active');
+  var next = document.getElementById(id);
+  if (next) {
+    next.classList.add('active');
+    navHistory.push(id);
+    // Reset scroll on scrollable screens
+    var scroll = next.querySelector('.compat-scroll, .chatlist-inner');
+    if (scroll) scroll.scrollTop = 0;
   }
-};
-
-function showCategory(key) {
-  const d = categories[key];
-  const matchCount = d.traits.filter(t => t.match).length;
-  const pill = pct =>
-    pct >= 80 ? 'pill-green' : pct >= 60 ? 'pill-yellow' : 'pill-red';
-
-  document.getElementById('cat-hero-content').innerHTML = `
-    <button class="back-btn" onclick="goBack('screen-category','screen-compat')" style="color:#333;">← Compatibility</button>
-    <div class="cat-header">
-      <div class="cat-hero-icon" style="background:${d.bg};">${d.icon}</div>
-      <div>
-        <div class="cat-hero-name">${d.name}</div>
-        <div class="cat-hero-sub">${d.sub}</div>
-      </div>
-    </div>
-    <div class="match-meter">
-      <div class="meter-label">
-        <span>Compatibility</span>
-        <span style="font-weight:800;color:${d.color};">${d.pct}%</span>
-      </div>
-      <div class="meter-track">
-        <div class="meter-fill" style="width:${d.pct}%;background:${d.color};"></div>
-      </div>
-    </div>
-  `;
-
-  document.getElementById('cat-trait-list').innerHTML =
-    d.traits.map(t => `
-      <div class="trait-row">
-        <div class="trait-emoji">${t.emoji}</div>
-        <div class="trait-body">
-          <div class="trait-name">${t.name}</div>
-          <div class="trait-vals">You: <strong>${t.you}</strong> · Jordan: <strong>${t.them}</strong></div>
-        </div>
-        <div class="trait-match">${t.match ? '✅' : '⚡'}</div>
-      </div>
-    `).join('');
-
-  document.getElementById('cat-tip').innerHTML = d.tip;
-
-  showScreen('screen-category');
 }
 
-/* ─────────────────────────────────────────
-   Swipe card animation
-───────────────────────────────────────── */
-function swipeCard(dir) {
-  const card = document.getElementById('top-card');
-  const x = dir === 'right' ? 500 : -500;
-  card.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.6,1), opacity 0.4s';
-  card.style.transform = `translateX(${x}px) rotate(${dir === 'right' ? 15 : -15}deg)`;
-  card.style.opacity = '0';
-  setTimeout(() => { card.style.display = 'none'; }, 420);
+function goBack() {
+  if (navHistory.length > 1) {
+    navHistory.pop();
+    var prevId = navHistory[navHistory.length - 1];
+    var cur = document.querySelector('.screen.active');
+    if (cur) cur.classList.remove('active');
+    var prev = document.getElementById(prevId);
+    if (prev) prev.classList.add('active');
+  }
 }
 
-/* ─────────────────────────────────────────
-   Touch / drag swipe on card
-───────────────────────────────────────── */
-(function() {
-  const card = document.getElementById('top-card');
-  let startX = 0, curX = 0, dragging = false;
+/* ═══════════════════════════════════════════════════════
+   Questionnaire option selection
+═══════════════════════════════════════════════════════ */
+function selectPref(el) {
+  var opts = el.parentElement.querySelectorAll('.prefopt');
+  opts.forEach(function(o) { o.classList.remove('sel'); });
+  el.classList.add('sel');
+}
 
-  card.addEventListener('pointerdown', e => {
-    if (e.target.closest('.lifestyle-badge')) return;
-    startX = e.clientX; dragging = true;
+/* ═══════════════════════════════════════════════════════
+   Swipeable card factory
+   makeSwipeable(cardId, stampLikeId, stampNopeId, onRight, onLeft)
+═══════════════════════════════════════════════════════ */
+function makeSwipeable(cardId, stampLId, stampNId, onRight, onLeft) {
+  var card = document.getElementById(cardId);
+  var stampL = document.getElementById(stampLId);
+  var stampN = document.getElementById(stampNId);
+  if (!card) return;
+
+  var startX = 0, startY = 0, curX = 0, curY = 0, dragging = false;
+  var THRESHOLD = 90;
+
+  card.addEventListener('pointerdown', function(e) {
+    if (e.target.closest('.likebtn, .sswipenbt, .lmbadge')) return;
+    startX = e.clientX; startY = e.clientY;
+    dragging = true;
     card.setPointerCapture(e.pointerId);
     card.style.transition = 'none';
   });
-  card.addEventListener('pointermove', e => {
+
+  card.addEventListener('pointermove', function(e) {
     if (!dragging) return;
     curX = e.clientX - startX;
-    const rot = curX * 0.06;
-    card.style.transform = `translateX(${curX}px) rotate(${rot}deg)`;
+    curY = e.clientY - startY;
+    var rot = curX * 0.06;
+    card.style.transform = 'translateX(' + curX + 'px) translateY(' + (curY * 0.25) + 'px) rotate(' + rot + 'deg)';
+    var ratio = Math.min(Math.abs(curX) / THRESHOLD, 1);
+    if (curX > 10) { if (stampL) stampL.style.opacity = ratio; if (stampN) stampN.style.opacity = 0; }
+    else if (curX < -10) { if (stampN) stampN.style.opacity = ratio; if (stampL) stampL.style.opacity = 0; }
+    else { if (stampL) stampL.style.opacity = 0; if (stampN) stampN.style.opacity = 0; }
   });
-  card.addEventListener('pointerup', () => {
+
+  function endDrag() {
+    if (!dragging) return;
     dragging = false;
-    if (Math.abs(curX) > 100) {
-      swipeCard(curX > 0 ? 'right' : 'left');
+    if (stampL) stampL.style.opacity = 0;
+    if (stampN) stampN.style.opacity = 0;
+    if (Math.abs(curX) >= THRESHOLD) {
+      flyOut(curX > 0 ? 1 : -1, curX > 0 ? onRight : onLeft);
     } else {
-      card.style.transition = 'transform 0.3s';
-      card.style.transform = '';
+      snapBack();
     }
-    curX = 0;
+    curX = 0; curY = 0;
+  }
+
+  card.addEventListener('pointerup', endDrag);
+  card.addEventListener('pointercancel', function() {
+    dragging = false;
+    if (stampL) stampL.style.opacity = 0;
+    if (stampN) stampN.style.opacity = 0;
+    snapBack();
+    curX = 0; curY = 0;
   });
-})();
+
+  function snapBack() {
+    card.style.transition = 'transform 0.35s cubic-bezier(0.4,0,0.2,1)';
+    card.style.transform = '';
+  }
+
+  function flyOut(dir, callback) {
+    card.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s';
+    card.style.transform = 'translateX(' + (dir * 600) + 'px) rotate(' + (dir * 25) + 'deg)';
+    card.style.opacity = '0';
+    setTimeout(function() {
+      card.style.display = 'none';
+      if (callback) callback();
+      // Reset card for next visit
+      setTimeout(function() {
+        card.style.transition = 'none';
+        card.style.transform = '';
+        card.style.opacity = '1';
+        card.style.display = '';
+      }, 50);
+    }, 420);
+  }
+
+  // Button clicks
+  var likeBtn = document.getElementById(cardId.replace('card', 'like'));
+  if (likeBtn) likeBtn.addEventListener('click', function() { flyOut(1, onRight); });
+
+  var ssBtn = document.getElementById(cardId.replace('card', 'ss'));
+  if (ssBtn) ssBtn.addEventListener('click', function() {
+    card.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s';
+    card.style.transform = 'translateY(-600px) scale(0.8)';
+    card.style.opacity = '0';
+    setTimeout(function() {
+      card.style.display = 'none';
+      if (onRight) onRight();
+      setTimeout(function() {
+        card.style.transition = 'none';
+        card.style.transform = '';
+        card.style.opacity = '1';
+        card.style.display = '';
+      }, 50);
+    }, 430);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   Wire up all swipeable cards
+═══════════════════════════════════════════════════════ */
+makeSwipeable('s1card',  's1sl', 's1sn',  function(){ showScreen('s6'); }, function(){ showScreen('s5'); });
+makeSwipeable('s4card',  's4sl', 's4sn',  function(){ showScreen('s6'); }, function(){ showScreen('s5'); });
+makeSwipeable('s5card',  's5sl', 's5sn',  function(){ showScreen('s6'); }, function(){ showScreen('s10'); });
+makeSwipeable('s10card', 's10sl','s10sn', function(){ showScreen('s6'); }, function(){ showScreen('s1'); });
+
+/* ═══════════════════════════════════════════════════════
+   Scale phone frame to always fit the viewport
+═══════════════════════════════════════════════════════ */
+function fitPhone() {
+  var scale = Math.min(window.innerWidth / 402, window.innerHeight / 874);
+  document.querySelector('.phone').style.transform =
+    'translate(-50%, -50%) scale(' + scale + ')';
+}
+fitPhone();
+window.addEventListener('resize', fitPhone);
 </script>
 </body>
 </html>
