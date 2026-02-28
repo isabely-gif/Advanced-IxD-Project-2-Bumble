@@ -26,8 +26,8 @@
     .icon-bat  { width: 27px; height: 13px; }
 
     /* ── App header ── */
-    .appheader { flex-shrink: 0; height: 38px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; background: #fff; }
-    .wordmark { font-family: var(--font-bumble); font-size: 30px; font-weight: 700; line-height: 1; color: var(--color-primary-logo); letter-spacing: -0.5px; }
+    .appheader { flex-shrink: 0; height: 28px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; background: #fff; overflow: visible; }
+    .wordmark { font-family: var(--font-bumble); font-size: 34px; font-weight: 700; line-height: 1; color: #232323; letter-spacing: 0; }
     .filterbtn { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; padding: 0; }
     .filterbtn img { width: 26px; height: 26px; object-fit: contain; display: block; }
 
@@ -40,34 +40,35 @@
     .backheader-right img { width: 20px; height: 20px; object-fit: contain; }
 
     /* ── Offer row ── */
-    .offerrow { flex-shrink: 0; position: relative; height: 56px; margin: 0 12px 8px; }
-    .offerbanner { position: absolute; inset: 0; background: var(--color-neutral-100); border-radius: var(--radius-sm); display: flex; align-items: center; padding: 0 104px 0 14px; }
-    .offertext { font-family: var(--font-bumble); font-size: 14px; font-weight: 600; line-height: 1.3; color: #000; }
-    .offerbtn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 88px; height: 34px; background: var(--color-primary); color: #fff; border: none; border-radius: var(--radius-full); font-family: var(--font-bumble); font-size: 13px; font-weight: 600; cursor: pointer; }
+    .offerrow { flex-shrink: 0; position: relative; height: 65px; margin: 13px 17px 5px 12px; }
+    .offerbanner { position: absolute; inset: 0; background: #f3f3f3; border-radius: 15px; display: flex; align-items: center; padding: 0 103px 0 19px; }
+    .offertext { font-family: var(--font-bumble); font-size: 16px; font-weight: 600; line-height: 1.3; color: #202020; }
+    .offerbtn { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); width: 74px; height: 32px; background: #202020; color: #fff; border: none; border-radius: 10px; font-family: var(--font-bumble); font-size: 14px; font-weight: 500; cursor: pointer; }
 
     /* ── Card area ── */
     .cardarea { flex: 1; position: relative; overflow: hidden; }
-    .card { position: absolute; top: 8px; bottom: 5px; left: 9px; right: 9px; border-radius: var(--radius-2xl); overflow: hidden; }
+    .card { position: absolute; top: 8px; bottom: 5px; left: 12px; right: 9px; border-radius: var(--radius-2xl); overflow: hidden; }
     .card-back-2 { background: #e0e0e0; transform: scale(0.92) translateY(-14px); transform-origin: top center; z-index: 0; }
     .card-back-1 { background: #ebebeb; transform: scale(0.96) translateY(-7px); transform-origin: top center; z-index: 1; }
     .card-top { background: var(--color-neutral-900); z-index: 2; cursor: grab; user-select: none; touch-action: none; }
     .card-top:active { cursor: grabbing; }
     .cardphoto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; pointer-events: none; }
-    .uploadbtn { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; z-index: 4; background: rgba(0,0,0,0.38); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .uploadbtn { position: absolute; top: 18px; right: 21px; width: 30px; height: 30px; z-index: 4; background: rgba(0,0,0,0.38); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     .cardscrim { position: absolute; bottom: 0; left: 0; right: 0; height: 55%; background: var(--gradient-card-scrim); pointer-events: none; z-index: 2; }
     .swipestamp { position: absolute; top: 28px; z-index: 10; font-family: var(--font-bumble); font-size: 32px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; border: 4px solid; border-radius: 6px; padding: 4px 12px; opacity: 0; pointer-events: none; transition: opacity 0.1s; }
     .stamp-like { left: 20px; color: #4caf50; border-color: #4caf50; transform: rotate(-15deg); }
     .stamp-nope { right: 20px; color: var(--color-dislike); border-color: var(--color-dislike); transform: rotate(15deg); }
-    .cardinfo { position: absolute; bottom: 84px; left: 13px; right: 13px; z-index: 3; pointer-events: none; }
-    .cardname { font-family: var(--font-bumble); font-size: 26px; font-weight: 600; line-height: 31px; color: #fff; margin-bottom: 10px; }
-    .carddetail { display: flex; align-items: center; gap: 8px; height: 24px; margin-bottom: 7px; }
+    .cardinfo { position: absolute; bottom: 75px; left: 13px; right: 13px; z-index: 3; pointer-events: none; }
+    .cardname { font-family: var(--font-bumble); font-size: 24px; font-weight: 600; line-height: 29px; color: #fff; margin-bottom: 5px; }
+    .carddetail { display: flex; align-items: center; gap: 6px; height: 20px; margin-bottom: 4px; }
     .carddetail:last-child { margin-bottom: 0; }
     .dicon { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; display: block; }
+    .dicon-school { width: 25px; height: 22px; }
     .dtext { font-family: var(--font-bumble); font-size: 16px; font-weight: 600; line-height: 1; color: #fff; }
     .cardactions { position: absolute; bottom: 18px; left: 13px; right: 13px; z-index: 4; display: flex; justify-content: space-between; align-items: flex-end; pointer-events: none; }
     .likebtn, .sswipenbt { pointer-events: auto; background: none; border: none; padding: 0; cursor: pointer; display: block; }
-    .likebtn img { width: 44px; height: 44px; display: block; object-fit: contain; }
-    .sswipenbt img { width: 44px; height: 44px; display: block; object-fit: contain; }
+    .likebtn img { width: 42px; height: 42px; display: block; object-fit: contain; }
+    .sswipenbt img { width: 64px; height: 62px; display: block; object-fit: contain; }
 
     /* ── Lifestyle match pill on card ── */
     .lmbadge { position: absolute; bottom: 172px; left: 13px; right: 13px; z-index: 4; cursor: pointer; pointer-events: auto; }
@@ -85,17 +86,31 @@
     .upgcta-text { font-size: 13px; font-weight: 600; color: var(--color-primary); }
 
     /* ── Bottom nav ── */
-    .bottomnav { flex-shrink: 0; height: 91px; background: rgba(255,255,255,0.85); backdrop-filter: var(--blur-nav); -webkit-backdrop-filter: var(--blur-nav); display: flex; flex-direction: column; align-items: center; padding: 0 16px; }
-    .navtabs { width: 100%; height: 65px; display: flex; align-items: stretch; justify-content: space-between; }
-    .navitem { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 8px 0; background: none; border: none; cursor: pointer; overflow: hidden; color: var(--color-secondary); }
+    .bottomnav { flex-shrink: 0; height: 91px; background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; padding: 0 16px; }
+    .navtabs { width: 100%; height: 65px; display: flex; align-items: flex-start; justify-content: space-between; }
+    .navitem { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 6px; padding: 8px 0 0; background: none; border: none; cursor: pointer; overflow: visible; color: var(--color-secondary); min-width: 0; }
     .navitem.active { color: var(--color-primary); }
-    .navitem--profile { box-shadow: var(--shadow-nav); }
-    .navicon { position: relative; width: 25px; height: 25px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .navicon img { width: 100%; height: 100%; object-fit: contain; display: block; }
-    .navicon--people img { width: 37.8px; height: 37.8px; position: absolute; top: -7px; left: -6.5px; }
+    .navitem-profile { gap: 6px; }
+    .navitem-chats { gap: 1px; }
+    /* Profile icon: 25×25 */
+    .ni-profile { width: 25px; height: 25px; flex-shrink: 0; }
+    .ni-profile img { width: 100%; height: 100%; display: block; object-fit: contain; }
+    /* Discover icon: 25×25, full compass visible */
+    .ni-discover { width: 25px; height: 25px; flex-shrink: 0; }
+    .ni-discover img { width: 100%; height: 100%; display: block; object-fit: contain; }
+    /* People icon: 25×25, full hexagon visible */
+    .ni-people { width: 25px; height: 25px; flex-shrink: 0; }
+    .ni-people img { width: 100%; height: 100%; display: block; object-fit: contain; }
+    /* Liked You icon: 30×25 */
+    .ni-likedyou { position: relative; width: 30px; height: 25px; flex-shrink: 0; }
+    .ni-likedyou .li { position: absolute; width: 27px; height: 26.5px; left: 1.5px; top: -1.5px; }
+    .ni-likedyou .li img { width: 100%; height: 100%; display: block; object-fit: contain; }
+    /* Chats icon: 40×30 */
+    .ni-chats { position: relative; width: 40px; height: 30px; flex-shrink: 0; }
+    .ni-chats img { width: 100%; height: 100%; display: block; object-fit: contain; }
     .navlabel { font-family: var(--font-bumble); font-size: 11px; font-weight: 600; line-height: 1; color: inherit; text-align: center; width: 72px; white-space: nowrap; }
     .homeindicator { width: 100%; height: 16px; display: flex; align-items: center; justify-content: center; }
-    .homeindbar { width: 134px; height: 5px; background: var(--color-primary-dark); border-radius: var(--radius-sm); }
+    .homeindbar { width: 134px; height: 5px; background: #020202; border-radius: 10px; }
 
     /* ════════════════ SCREEN 2 – Feature Explanation ════════════════ */
     .feat-overlay { position: absolute; inset: 0; background: rgba(68,66,66,0.55); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; gap: 16px; }
@@ -233,14 +248,14 @@
   <div class="statusbar">
     <span class="stime">9:41</span>
     <div class="sicons">
-      <img class="icon-cell" src="https://www.figma.com/api/mcp/asset/d36add2d-8ce5-4f01-8849-48e5c6467ac3" alt="">
-      <img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/ccf5b615-df60-4157-92ca-88905f790821" alt="">
-      <img class="icon-bat"  src="https://www.figma.com/api/mcp/asset/5885da50-33cc-463c-b531-782cd39d2bcd" alt="">
+      <img class="icon-cell" src="https://www.figma.com/api/mcp/asset/f23013e3-26e7-4d62-9b67-7fdcafd28fa8" alt="">
+      <img class="icon-wifi" src="https://www.figma.com/api/mcp/asset/bbe353f1-18cd-47f4-baf9-4b6b6761eed5" alt="">
+      <img class="icon-bat"  src="https://www.figma.com/api/mcp/asset/7b29bff4-b007-43ab-81ae-b7e53d579b44" alt="">
     </div>
   </div>
   <div class="appheader">
     <span class="wordmark">Bumble</span>
-    <button class="filterbtn"><img src="https://www.figma.com/api/mcp/asset/f14e4219-2114-4685-b451-cc85c99b4ec9" alt=""></button>
+    <button class="filterbtn"><img src="https://www.figma.com/api/mcp/asset/38fec974-664a-42b9-863a-bef904936f8a" alt=""></button>
   </div>
   <div class="offerrow">
     <div class="offerbanner"><p class="offertext">Check out a deeper lifestyle analysis for $2.99</p></div>
@@ -252,32 +267,46 @@
     <div class="card card-top" id="s1card">
       <img class="cardphoto" src="assets/Kevin.jpg" alt="Kevin">
       <div class="uploadbtn">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M8 2L4.5 6H7V11H9V6H11.5L8 2Z" fill="white"/>
-          <rect x="3" y="12.5" width="10" height="1.5" rx="0.75" fill="white"/>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M7 1.5L4 5H6.25V9.5H7.75V5H10L7 1.5Z" fill="white"/>
+          <rect x="2.5" y="11" width="9" height="1.5" rx="0.75" fill="white"/>
         </svg>
       </div>
       <div class="cardscrim"></div>
-      <div class="swipestamp stamp-like" id="s1sl">Like</div>
       <div class="swipestamp stamp-nope" id="s1sn">Nope</div>
-      <div class="cardinfo" style="bottom:74px;">
+      <div class="cardinfo">
         <h2 class="cardname">Kevin, 31</h2>
-        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/d2d20b56-bb89-43af-b273-e9402467d771" alt=""><span class="dtext">Management Consulting</span></div>
-        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/a39d7439-a024-4831-a80c-d8f77b6f87fc" alt=""><span class="dtext">UCLA</span></div>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/cd591c1e-9693-438c-a068-1965daad20fa" alt=""><span class="dtext">Management Consulting</span></div>
+        <div class="carddetail"><img class="dicon dicon-school" src="https://www.figma.com/api/mcp/asset/eb32b8f3-6d97-43df-8e5b-a06496f34fbb" alt=""><span class="dtext">UCLA</span></div>
       </div>
       <div class="cardactions">
-        <button class="likebtn" id="s1like"><img src="https://www.figma.com/api/mcp/asset/66202037-06e8-4344-af77-7027aaf81ed9" alt="Like"></button>
-        <button class="sswipenbt" id="s1ss"><img src="https://www.figma.com/api/mcp/asset/512e7c0e-5968-4d92-80d8-9e8d85c091a8" alt="SuperSwipe"></button>
+        <button class="likebtn" id="s1like"><img src="https://www.figma.com/api/mcp/asset/fb7dd47b-0c73-46f2-8f24-3275e9629d88" alt="Like"></button>
+        <button class="sswipenbt" id="s1ss"><img src="https://www.figma.com/api/mcp/asset/c739c060-8b9b-458a-8e3c-c7b2256f3912" alt="SuperSwipe"></button>
       </div>
     </div>
   </div>
   <nav class="bottomnav">
     <div class="navtabs">
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
-      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
-      <button class="navitem" onclick="showScreen('s9')"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+      <button class="navitem navitem-profile">
+        <div class="ni-profile"><img src="https://www.figma.com/api/mcp/asset/1f039a69-0d3c-469f-a1b5-6c420527b856" alt=""></div>
+        <span class="navlabel">Profile</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-discover"><img src="https://www.figma.com/api/mcp/asset/395dbe47-2345-4f69-ac16-ddefa7751ad6" alt=""></div>
+        <span class="navlabel">Discover</span>
+      </button>
+      <button class="navitem active">
+        <div class="ni-people"><img src="https://www.figma.com/api/mcp/asset/8b509b1c-e356-4679-8ccf-80c0c6584146" alt=""></div>
+        <span class="navlabel">People</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-likedyou"><div class="li"><img src="https://www.figma.com/api/mcp/asset/28d2dd4e-704d-4ff0-8a37-9efcfe8faa95" alt=""></div></div>
+        <span class="navlabel">Liked You</span>
+      </button>
+      <button class="navitem navitem-chats" onclick="showScreen('s9')">
+        <div class="ni-chats"><img src="https://www.figma.com/api/mcp/asset/75927dc0-f042-44c7-927a-3b4dcc2c3297" alt=""></div>
+        <span class="navlabel">Chats</span>
+      </button>
     </div>
     <div class="homeindicator"><div class="homeindbar"></div></div>
   </nav>
@@ -296,7 +325,7 @@
       <img class="icon-bat"  src="https://www.figma.com/api/mcp/asset/5885da50-33cc-463c-b531-782cd39d2bcd" alt="">
     </div>
   </div>
-  <div class="appheader"><span class="wordmark">Bumble</span><button class="filterbtn"><img src="https://www.figma.com/api/mcp/asset/f14e4219-2114-4685-b451-cc85c99b4ec9" alt=""></button></div>
+  <div class="appheader"><span class="wordmark">Bumble</span><button class="filterbtn"><img src="https://www.figma.com/api/mcp/asset/38fec974-664a-42b9-863a-bef904936f8a" alt=""></button></div>
   <div class="offerrow"><div class="offerbanner"><p class="offertext">Check out a deeper lifestyle analysis for $2.99</p></div><button class="offerbtn">Get offer</button></div>
   <div class="cardarea">
     <div class="card card-back-2" aria-hidden="true"></div>
@@ -310,28 +339,43 @@
           <p>Uncover lifestyle match % by answering questions about your lifestyle preferences as you swipe</p>
         </div>
         <div class="feat-arrows">
-          <img src="https://www.figma.com/api/mcp/asset/6a36d76d-c0ac-4c0b-8b93-70ffd34522b6" alt="">
-          <img src="https://www.figma.com/api/mcp/asset/4a50e014-5dff-4303-b083-3c342b5d672d" alt="">
+          <img src="https://www.figma.com/api/mcp/asset/aff864e7-7509-462c-8861-1ae0bb432479" alt="">
+          <img src="https://www.figma.com/api/mcp/asset/2200120c-2bb1-4145-bf42-04691bc03278" alt="">
         </div>
       </div>
       <div class="cardinfo" style="z-index:5;">
         <h2 class="cardname">Kevin, 31</h2>
-        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/d2d20b56-bb89-43af-b273-e9402467d771" alt=""><span class="dtext">Management Consulting</span></div>
-        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/a39d7439-a024-4831-a80c-d8f77b6f87fc" alt=""><span class="dtext">UCLA</span></div>
+        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/cd591c1e-9693-438c-a068-1965daad20fa" alt=""><span class="dtext">Management Consulting</span></div>
+        <div class="carddetail"><img class="dicon dicon-school" src="https://www.figma.com/api/mcp/asset/eb32b8f3-6d97-43df-8e5b-a06496f34fbb" alt=""><span class="dtext">UCLA</span></div>
       </div>
       <div class="cardactions" style="z-index:5;">
-        <button class="likebtn" style="pointer-events:auto;" onclick="showScreen('s6')"><img style="width:58px;height:58px;" src="https://www.figma.com/api/mcp/asset/0eb300b6-0713-4fe4-a196-d3fd66c10142" alt="Like"></button>
-        <button class="sswipenbt" style="pointer-events:auto;" onclick="showScreen('s6')"><img style="width:87px;height:87px;" src="https://www.figma.com/api/mcp/asset/350feb83-bb1e-45d5-9ddf-7a77c457d153" alt="SuperSwipe"></button>
+        <button class="likebtn" style="pointer-events:auto;" onclick="showScreen('s3')"><img src="https://www.figma.com/api/mcp/asset/fb7dd47b-0c73-46f2-8f24-3275e9629d88" alt="Like"></button>
+        <button class="sswipenbt" style="pointer-events:auto;" onclick="showScreen('s3')"><img src="https://www.figma.com/api/mcp/asset/c739c060-8b9b-458a-8e3c-c7b2256f3912" alt="SuperSwipe"></button>
       </div>
     </div>
   </div>
   <nav class="bottomnav">
     <div class="navtabs">
-      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
-      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+      <button class="navitem navitem-profile">
+        <div class="ni-profile"><img src="https://www.figma.com/api/mcp/asset/1f039a69-0d3c-469f-a1b5-6c420527b856" alt=""></div>
+        <span class="navlabel">Profile</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-discover"><img src="https://www.figma.com/api/mcp/asset/395dbe47-2345-4f69-ac16-ddefa7751ad6" alt=""></div>
+        <span class="navlabel">Discover</span>
+      </button>
+      <button class="navitem active">
+        <div class="ni-people"><img src="https://www.figma.com/api/mcp/asset/8b509b1c-e356-4679-8ccf-80c0c6584146" alt=""></div>
+        <span class="navlabel">People</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-likedyou"><div class="li"><img src="https://www.figma.com/api/mcp/asset/28d2dd4e-704d-4ff0-8a37-9efcfe8faa95" alt=""></div></div>
+        <span class="navlabel">Liked You</span>
+      </button>
+      <button class="navitem navitem-chats">
+        <div class="ni-chats"><img src="https://www.figma.com/api/mcp/asset/75927dc0-f042-44c7-927a-3b4dcc2c3297" alt=""></div>
+        <span class="navlabel">Chats</span>
+      </button>
     </div>
     <div class="homeindicator"><div class="homeindbar"></div></div>
   </nav>
@@ -360,11 +404,26 @@
   </div>
   <nav class="bottomnav">
     <div class="navtabs">
-      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
-      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+      <button class="navitem navitem-profile">
+        <div class="ni-profile"><img src="https://www.figma.com/api/mcp/asset/1f039a69-0d3c-469f-a1b5-6c420527b856" alt=""></div>
+        <span class="navlabel">Profile</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-discover"><img src="https://www.figma.com/api/mcp/asset/395dbe47-2345-4f69-ac16-ddefa7751ad6" alt=""></div>
+        <span class="navlabel">Discover</span>
+      </button>
+      <button class="navitem active">
+        <div class="ni-people"><img src="https://www.figma.com/api/mcp/asset/8b509b1c-e356-4679-8ccf-80c0c6584146" alt=""></div>
+        <span class="navlabel">People</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-likedyou"><div class="li"><img src="https://www.figma.com/api/mcp/asset/28d2dd4e-704d-4ff0-8a37-9efcfe8faa95" alt=""></div></div>
+        <span class="navlabel">Liked You</span>
+      </button>
+      <button class="navitem navitem-chats">
+        <div class="ni-chats"><img src="https://www.figma.com/api/mcp/asset/75927dc0-f042-44c7-927a-3b4dcc2c3297" alt=""></div>
+        <span class="navlabel">Chats</span>
+      </button>
     </div>
     <div class="homeindicator"><div class="homeindbar"></div></div>
   </nav>
@@ -403,7 +462,7 @@
       <div class="cardinfo">
         <h2 class="cardname">Kevin, 31</h2>
         <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/d2d20b56-bb89-43af-b273-e9402467d771" alt=""><span class="dtext">Management Consulting</span></div>
-        <div class="carddetail"><img class="dicon" src="https://www.figma.com/api/mcp/asset/a39d7439-a024-4831-a80c-d8f77b6f87fc" alt=""><span class="dtext">UCLA</span></div>
+        <div class="carddetail"><img class="dicon dicon-school" src="https://www.figma.com/api/mcp/asset/a39d7439-a024-4831-a80c-d8f77b6f87fc" alt=""><span class="dtext">UCLA</span></div>
       </div>
       <div class="cardactions">
         <button class="likebtn" id="s4like"><img src="https://www.figma.com/api/mcp/asset/07e398ad-57d0-4b3d-8608-f925b1df0007" alt="Like"></button>
@@ -417,11 +476,26 @@
   </div>
   <nav class="bottomnav">
     <div class="navtabs">
-      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
-      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+      <button class="navitem navitem-profile">
+        <div class="ni-profile"><img src="https://www.figma.com/api/mcp/asset/1f039a69-0d3c-469f-a1b5-6c420527b856" alt=""></div>
+        <span class="navlabel">Profile</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-discover"><img src="https://www.figma.com/api/mcp/asset/395dbe47-2345-4f69-ac16-ddefa7751ad6" alt=""></div>
+        <span class="navlabel">Discover</span>
+      </button>
+      <button class="navitem active">
+        <div class="ni-people"><img src="https://www.figma.com/api/mcp/asset/8b509b1c-e356-4679-8ccf-80c0c6584146" alt=""></div>
+        <span class="navlabel">People</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-likedyou"><div class="li"><img src="https://www.figma.com/api/mcp/asset/28d2dd4e-704d-4ff0-8a37-9efcfe8faa95" alt=""></div></div>
+        <span class="navlabel">Liked You</span>
+      </button>
+      <button class="navitem navitem-chats">
+        <div class="ni-chats"><img src="https://www.figma.com/api/mcp/asset/75927dc0-f042-44c7-927a-3b4dcc2c3297" alt=""></div>
+        <span class="navlabel">Chats</span>
+      </button>
     </div>
     <div class="homeindicator"><div class="homeindbar"></div></div>
   </nav>
@@ -472,11 +546,26 @@
   </div>
   <nav class="bottomnav">
     <div class="navtabs">
-      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
-      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+      <button class="navitem navitem-profile">
+        <div class="ni-profile"><img src="https://www.figma.com/api/mcp/asset/1f039a69-0d3c-469f-a1b5-6c420527b856" alt=""></div>
+        <span class="navlabel">Profile</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-discover"><img src="https://www.figma.com/api/mcp/asset/395dbe47-2345-4f69-ac16-ddefa7751ad6" alt=""></div>
+        <span class="navlabel">Discover</span>
+      </button>
+      <button class="navitem active">
+        <div class="ni-people"><img src="https://www.figma.com/api/mcp/asset/8b509b1c-e356-4679-8ccf-80c0c6584146" alt=""></div>
+        <span class="navlabel">People</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-likedyou"><div class="li"><img src="https://www.figma.com/api/mcp/asset/28d2dd4e-704d-4ff0-8a37-9efcfe8faa95" alt=""></div></div>
+        <span class="navlabel">Liked You</span>
+      </button>
+      <button class="navitem navitem-chats">
+        <div class="ni-chats"><img src="https://www.figma.com/api/mcp/asset/75927dc0-f042-44c7-927a-3b4dcc2c3297" alt=""></div>
+        <span class="navlabel">Chats</span>
+      </button>
     </div>
     <div class="homeindicator"><div class="homeindbar"></div></div>
   </nav>
@@ -516,11 +605,26 @@
   </div>
   <nav class="bottomnav" style="background:rgba(251,220,96,0.9);">
     <div class="navtabs">
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8d814318-f379-4e2e-8c6a-f7cabebca575" alt=""></div><span class="navlabel">Profile</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/557d1bb2-8d17-43da-8b9e-209eaf8182e3" alt=""></div><span class="navlabel">Discover</span></button>
-      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/63ef7ea4-18d4-4bf1-831b-8fdf9b247372" alt=""></div><span class="navlabel">People</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e5f1ba59-673a-46c9-87eb-d5401342fed7" alt=""></div><span class="navlabel">Liked You</span></button>
-      <button class="navitem" onclick="showScreen('s9')"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/b351b30d-8713-4313-b7a4-9b91ff33ddc5" alt=""></div><span class="navlabel">Chats</span></button>
+      <button class="navitem navitem-profile">
+        <div class="ni-profile"><img src="https://www.figma.com/api/mcp/asset/1f039a69-0d3c-469f-a1b5-6c420527b856" alt=""></div>
+        <span class="navlabel">Profile</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-discover"><img src="https://www.figma.com/api/mcp/asset/395dbe47-2345-4f69-ac16-ddefa7751ad6" alt=""></div>
+        <span class="navlabel">Discover</span>
+      </button>
+      <button class="navitem active">
+        <div class="ni-people"><img src="https://www.figma.com/api/mcp/asset/8b509b1c-e356-4679-8ccf-80c0c6584146" alt=""></div>
+        <span class="navlabel">People</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-likedyou"><div class="li"><img src="https://www.figma.com/api/mcp/asset/28d2dd4e-704d-4ff0-8a37-9efcfe8faa95" alt=""></div></div>
+        <span class="navlabel">Liked You</span>
+      </button>
+      <button class="navitem navitem-chats" onclick="showScreen('s9')">
+        <div class="ni-chats"><img src="https://www.figma.com/api/mcp/asset/75927dc0-f042-44c7-927a-3b4dcc2c3297" alt=""></div>
+        <span class="navlabel">Chats</span>
+      </button>
     </div>
     <div class="homeindicator"><div class="homeindbar"></div></div>
   </nav>
@@ -549,11 +653,26 @@
   </div>
   <nav class="bottomnav">
     <div class="navtabs">
-      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/23edda5f-97cc-4d2d-ba78-b0f9ca0c6b70" alt=""></div><span class="navlabel">Profile</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/8dc7251d-8761-4bfa-99a9-f8e7992621b5" alt=""></div><span class="navlabel">Discover</span></button>
-      <button class="navitem active"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/886808ad-75d0-4d0d-b3a6-0f47721d7872" alt=""></div><span class="navlabel">People</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/71cf43d0-bc6f-4039-80ab-2156ea0d09ba" alt=""></div><span class="navlabel">Liked You</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/a5cdf0ce-6ad0-40d2-a87f-f7f6d187f651" alt=""></div><span class="navlabel">Chats</span></button>
+      <button class="navitem navitem-profile">
+        <div class="ni-profile"><img src="https://www.figma.com/api/mcp/asset/1f039a69-0d3c-469f-a1b5-6c420527b856" alt=""></div>
+        <span class="navlabel">Profile</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-discover"><img src="https://www.figma.com/api/mcp/asset/395dbe47-2345-4f69-ac16-ddefa7751ad6" alt=""></div>
+        <span class="navlabel">Discover</span>
+      </button>
+      <button class="navitem active">
+        <div class="ni-people"><img src="https://www.figma.com/api/mcp/asset/8b509b1c-e356-4679-8ccf-80c0c6584146" alt=""></div>
+        <span class="navlabel">People</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-likedyou"><div class="li"><img src="https://www.figma.com/api/mcp/asset/28d2dd4e-704d-4ff0-8a37-9efcfe8faa95" alt=""></div></div>
+        <span class="navlabel">Liked You</span>
+      </button>
+      <button class="navitem navitem-chats">
+        <div class="ni-chats"><img src="https://www.figma.com/api/mcp/asset/75927dc0-f042-44c7-927a-3b4dcc2c3297" alt=""></div>
+        <span class="navlabel">Chats</span>
+      </button>
     </div>
     <div class="homeindicator"><div class="homeindbar"></div></div>
   </nav>
@@ -733,11 +852,26 @@
   <button class="matched-ctabtn" onclick="showScreen('s12')">See Compatibility Breakdown →</button>
   <nav class="bottomnav">
     <div class="navtabs">
-      <button class="navitem navitem--profile"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/c56e41d7-61eb-42f8-9af5-d1a51aa061f8" alt=""></div><span class="navlabel">Profile</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/30a6ee28-7bfa-4e84-9aeb-864f71e1d16f" alt=""></div><span class="navlabel">Discover</span></button>
-      <button class="navitem" onclick="showScreen('s1')"><div class="navicon navicon--people"><img src="https://www.figma.com/api/mcp/asset/8b59575e-bc18-4af1-96fa-1b410b3c3c59" alt=""></div><span class="navlabel">People</span></button>
-      <button class="navitem"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/e02e2c6a-7ecb-44fe-81a9-d4436439369f" alt=""></div><span class="navlabel">Liked You</span></button>
-      <button class="navitem active"><div class="navicon"><img src="https://www.figma.com/api/mcp/asset/147555f1-b823-4eaf-8abf-50278a7b81ca" alt=""></div><span class="navlabel">Chats</span></button>
+      <button class="navitem navitem-profile">
+        <div class="ni-profile"><img src="https://www.figma.com/api/mcp/asset/1f039a69-0d3c-469f-a1b5-6c420527b856" alt=""></div>
+        <span class="navlabel">Profile</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-discover"><img src="https://www.figma.com/api/mcp/asset/395dbe47-2345-4f69-ac16-ddefa7751ad6" alt=""></div>
+        <span class="navlabel">Discover</span>
+      </button>
+      <button class="navitem" onclick="showScreen('s1')">
+        <div class="ni-people"><img src="https://www.figma.com/api/mcp/asset/8b509b1c-e356-4679-8ccf-80c0c6584146" alt=""></div>
+        <span class="navlabel">People</span>
+      </button>
+      <button class="navitem">
+        <div class="ni-likedyou"><div class="li"><img src="https://www.figma.com/api/mcp/asset/28d2dd4e-704d-4ff0-8a37-9efcfe8faa95" alt=""></div></div>
+        <span class="navlabel">Liked You</span>
+      </button>
+      <button class="navitem navitem-chats active">
+        <div class="ni-chats"><img src="https://www.figma.com/api/mcp/asset/75927dc0-f042-44c7-927a-3b4dcc2c3297" alt=""></div>
+        <span class="navlabel">Chats</span>
+      </button>
     </div>
     <div class="homeindicator"><div class="homeindbar"></div></div>
   </nav>
@@ -899,14 +1033,14 @@ function selectPref(el) {
    Swipeable card factory
    makeSwipeable(cardId, stampLikeId, stampNopeId, onRight, onLeft)
 ═══════════════════════════════════════════════════════ */
-function makeSwipeable(cardId, stampLId, stampNId, onRight, onLeft) {
+function makeSwipeable(cardId, stampLId, stampNId, onRight, onLeft, threshold) {
   var card = document.getElementById(cardId);
   var stampL = document.getElementById(stampLId);
   var stampN = document.getElementById(stampNId);
   if (!card) return;
 
   var startX = 0, startY = 0, curX = 0, curY = 0, dragging = false;
-  var THRESHOLD = 90;
+  var THRESHOLD = threshold || 90;
 
   card.addEventListener('pointerdown', function(e) {
     if (e.target.closest('.likebtn, .sswipenbt, .lmbadge')) return;
@@ -923,7 +1057,8 @@ function makeSwipeable(cardId, stampLId, stampNId, onRight, onLeft) {
     var rot = curX * 0.06;
     card.style.transform = 'translateX(' + curX + 'px) translateY(' + (curY * 0.25) + 'px) rotate(' + rot + 'deg)';
     var ratio = Math.min(Math.abs(curX) / THRESHOLD, 1);
-    if (curX > 10) { if (stampL) stampL.style.opacity = ratio; if (stampN) stampN.style.opacity = 0; }
+    // Only show LIKE stamp if onRight callback is set; always show NOPE stamp
+    if (curX > 10 && onRight) { if (stampL) stampL.style.opacity = ratio; if (stampN) stampN.style.opacity = 0; }
     else if (curX < -10) { if (stampN) stampN.style.opacity = ratio; if (stampL) stampL.style.opacity = 0; }
     else { if (stampL) stampL.style.opacity = 0; if (stampN) stampN.style.opacity = 0; }
   });
@@ -934,7 +1069,10 @@ function makeSwipeable(cardId, stampLId, stampNId, onRight, onLeft) {
     if (stampL) stampL.style.opacity = 0;
     if (stampN) stampN.style.opacity = 0;
     if (Math.abs(curX) >= THRESHOLD) {
-      flyOut(curX > 0 ? 1 : -1, curX > 0 ? onRight : onLeft);
+      // Right swipe only triggers if onRight is set; otherwise snap back
+      if (curX > 0 && onRight) flyOut(1, onRight);
+      else if (curX < 0) flyOut(-1, onLeft);
+      else snapBack();
     } else {
       snapBack();
     }
@@ -972,12 +1110,12 @@ function makeSwipeable(cardId, stampLId, stampNId, onRight, onLeft) {
     }, 420);
   }
 
-  // Button clicks
+  // Button clicks — only attach if callback is provided (heart/star do nothing when onRight is null)
   var likeBtn = document.getElementById(cardId.replace('card', 'like'));
-  if (likeBtn) likeBtn.addEventListener('click', function() { flyOut(1, onRight); });
+  if (likeBtn && onRight) likeBtn.addEventListener('click', function() { flyOut(1, onRight); });
 
   var ssBtn = document.getElementById(cardId.replace('card', 'ss'));
-  if (ssBtn) ssBtn.addEventListener('click', function() {
+  if (ssBtn && onRight) ssBtn.addEventListener('click', function() {
     card.style.transition = 'transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s';
     card.style.transform = 'translateY(-600px) scale(0.8)';
     card.style.opacity = '0';
@@ -997,7 +1135,15 @@ function makeSwipeable(cardId, stampLId, stampNId, onRight, onLeft) {
 /* ═══════════════════════════════════════════════════════
    Wire up all swipeable cards
 ═══════════════════════════════════════════════════════ */
-makeSwipeable('s1card',  's1sl', 's1sn',  function(){ showScreen('s6'); }, function(){ showScreen('s5'); });
+// S1: left-only swipe (no LIKE stamp, heart/star inert), 100px threshold → s5
+makeSwipeable('s1card', null, 's1sn', null, function(){ showScreen('s5'); }, 100);
+
+// Auto-show S2 feature overlay after 1.5s
+setTimeout(function() {
+  if (document.querySelector('.screen.active') === document.getElementById('s1')) {
+    showScreen('s2');
+  }
+}, 1500);
 makeSwipeable('s4card',  's4sl', 's4sn',  function(){ showScreen('s6'); }, function(){ showScreen('s5'); });
 makeSwipeable('s5card',  's5sl', 's5sn',  function(){ showScreen('s6'); }, function(){ showScreen('s10'); });
 makeSwipeable('s10card', 's10sl','s10sn', function(){ showScreen('s6'); }, function(){ showScreen('s1'); });
